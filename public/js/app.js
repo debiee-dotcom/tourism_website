@@ -6,7 +6,7 @@ const packages = [
         category: "Heritage",
         duration: 1,
         price: 999,
-        image: "https://images.unsplash.com/photo-1600100397608-f010a7c7a3b4?auto=format&fit=crop&w=600&q=80"
+        image: "https://images.unsplash.com/photo-1602643163983-ed0babc39797?auto=format&fit=crop&w=600&q=80"
     },
     {
         title: "Ooty Hills Escape",
