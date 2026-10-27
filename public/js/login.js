@@ -1,4 +1,4 @@
-public/js/login.js
+
 
 const loginForm = document.getElementById("loginForm");
 const message = document.getElementById("message");
