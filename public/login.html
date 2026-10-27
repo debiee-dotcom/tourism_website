@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | LocalTrails</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">Local<span>Trails.</span></a>
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </header>
+
+    <main class="login-container">
+
+        <section class="login-card">
+            <div class="login-heading">
+                <p class="eyebrow">WELCOME BACK</p>
+                <h1>Login to LocalTrails</h1>
+                <p>Sign in to continue your travel journey.</p>
+            </div>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+                    <label for="role">Login as</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select your role</option>
+                        <option value="customer">Customer</option>
+                        <option value="provider">Local Tourist / Provider</option>
+                        <option value="admin">Admin</option>
+                        <option value="super_admin">Super Admin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" id="remember">
+                        Remember me
+                    </label>
+                    <a href="#" id="forgotPassword">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Login →
+                </button>
+
+                <p id="message" role="status" aria-live="polite"></p>
+            </form>
+
+            <div class="signup-link">
+                Don't have an account?
+                <a href="register.html">Create an account</a>
+            </div>
+
+        </section>
+
+        <aside class="login-visual">
+            <div class="visual-content">
+                <p class="eyebrow">TRAVEL BEYOND THE ORDINARY</p>
+                <h2>Your next adventure starts here.</h2>
+                <p>
+                    Discover hidden gems, explore local cultures
+                    and experience destinations with local experts.
+                </p>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="js/login.js"></script>
+</body>
+</html>
