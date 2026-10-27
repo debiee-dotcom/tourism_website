@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Trails | Discover Local Tourism</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">Local<span>Trails.</span></a>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#destinations">Destinations</a>
+            <a href="#packages">Packages</a>
+        </nav>
+
+        <a href="#" class="login-btn">Login</a>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <p class="eyebrow">DISCOVER YOUR NEXT ADVENTURE</p>
+            <h1>Explore local places.<br>Make lasting memories.</h1>
+            <p>Discover unique experiences and tours offered by local experts.</p>
+
+            <a href="#packages" class="primary-btn">Explore Packages →</a>
+        </section>
+
+        <section class="section" id="destinations">
+            <p class="eyebrow">EXPLORE INDIA</p>
+            <h2>Popular Destinations</h2>
+
+            <div class="destination-grid">
+                <article class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=600&q=80"
+                         alt="Traditional architecture in Tamil Nadu">
+                    <h3>Madurai</h3>
+                    <p>Temples & Heritage</p>
+                </article>
+
+                <article class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80"
+                         alt="Scenic green mountain landscape">
+                    <h3>Ooty</h3>
+                    <p>Hills & Nature</p>
+                </article>
+
+                <article class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80"
+                         alt="Tropical coastal scenery">
+                    <h3>Pondicherry</h3>
+                    <p>Beaches & Culture</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section packages-section" id="packages">
+            <p class="eyebrow">HANDPICKED EXPERIENCES</p>
+            <h2>Popular Tour Packages</h2>
+            <p class="section-description">
+                Find your next adventure with our local tour providers.
+            </p>
+
+            <div class="search-bar">
+                <input type="text" id="searchInput"
+                       placeholder="Search packages or destinations...">
+                <button id="searchButton" class="primary-btn">Search</button>
+            </div>
+
+            <div id="package-list" class="package-grid"></div>
+            <p id="empty-message" hidden>No matching packages found.</p>
+        </section>
+    </main>
+
+    <footer>
+        <a href="#home" class="logo">Local<span>Trails.</span></a>
+        <p>Discover more. Travel local.</p>
+        <p>© 2026 Local Trails</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
