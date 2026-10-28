@@ -1,10 +1,10 @@
-TerraTales – Local Tourism Booking System
+Local Trails – Local Tourism Booking System
 
 **Travel Together. Discover Stories. Leave a Better Footprint.**
 
 About the Project
 
-TerraTales is a web-based local tourism booking platform that connects travelers with local tourism providers.
+Local Trails is a web-based local tourism booking platform that connects travelers with local tourism providers.
 
 The platform allows users to explore destinations, discover local experiences, book tourism packages, and manage their trips.
 
@@ -78,5 +78,3 @@ Project Status
 
 Under Development
 
-
-**TerraTales — Explore More Than Just Places.**
