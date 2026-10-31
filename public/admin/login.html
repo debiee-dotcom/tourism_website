@@ -1,8 +1,51 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>LocalTrails | Admin sign in</title><link rel="stylesheet" href="/css/staff-login.css"></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>LocalTrails | Admin sign in</title>
+  <link rel="stylesheet" href="/css/staff-login.css">
+</head>
 <body data-role="admin">
- <main class="auth-layout">
-  <section class="hero" aria-label="LocalTrails portal"><a class="logo" href="/"><span class="logo-mark">L</span><span>LocalTrails</span></a><div class="hero-copy"><span class="eyebrow">ADMINISTRATION · PRIVATE ACCESS</span><h1>Everything in one place.<br><em>Purposefully simple.</em></h1><p>A calm, focused workspace to keep every local journey running smoothly.</p></div><div class="hero-footer">LocalTrails · Tourism management platform</div></section>
-  <section class="auth-side"><div class="auth-top"><a href="/">← Return to website</a></div><div class="auth-card"><div class="auth-symbol" aria-hidden="true">◈</div><p class="eyebrow">SECURE STAFF PORTAL</p><h2>Admin sign in</h2><p class="intro">Manage provider approvals, package reviews, and customer operations.</p><form id="staffLogin" novalidate><label for="email">Work email address</label><input id="email" type="email" name="email" autocomplete="username" placeholder="name@organization.com" required><label for="password">Password</label><div class="password-wrap"><input id="password" type="password" name="password" autocomplete="current-password" placeholder="Enter your password" required><button id="showPassword" type="button" aria-label="Show password">Show</button></div><p id="loginFeedback" class="feedback" role="alert" aria-live="polite"></p><button class="submit" id="submitLogin" type="submit">Sign in to Admin <span aria-hidden="true">→</span></button></form><p class="help">Access is restricted to authorized administrators. For account access, contact your platform owner.</p></div><div class="auth-bottom"><a href="/superadmin/login.html">Super Admin portal</a> <span>·</span> <a href="/login.html">Customer / Provider sign in</a></div></section>
- </main><script src="/js/staff-login.js" defer></script>
-</body></html>
+  <main class="auth-layout">
+    <section class="hero" aria-label="LocalTrails portal">
+      <a class="logo" href="/">
+        <span class="logo-mark">L</span>
+        <span>LocalTrails</span>
+      </a>
+      <div class="hero-copy">
+        <span class="eyebrow">ADMIN PORTAL</span>
+        <h1>Simple, calm access for your admin workspace.</h1>
+        <p>Provider approvals, package reviews, and platform operations in one place.</p>
+      </div>
+      <div class="hero-note">Secure internal access</div>
+    </section>
+
+    <section class="auth-side">
+      <div class="auth-top"><a href="/">← Back to website</a></div>
+
+      <div class="auth-card">
+        <div class="auth-symbol" aria-hidden="true">◈</div>
+        <h2>Admin sign in</h2>
+        <form id="staffLogin" novalidate>
+          <label for="email">Email address</label>
+          <input id="email" type="email" name="email" autocomplete="username" placeholder="admin@localtrails.com" required>
+
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input id="password" type="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
+            <button id="showPassword" type="button" aria-label="Show password">Show</button>
+          </div>
+
+          <p id="loginFeedback" class="feedback" role="alert" aria-live="polite"></p>
+          <button class="submit" id="submitLogin" type="submit">Sign in <span aria-hidden="true">→</span></button>
+        </form>
+      </div>
+
+      <div class="auth-bottom"><a href="/superadmin/login.html">Super Admin login</a></div>
+    </section>
+  </main>
+  <script src="/js/staff-login.js" defer></script>
+</body>
+</html>
