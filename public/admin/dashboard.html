@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard | Local Trails</title>
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div id="app-shell" data-role="admin" data-title="Admin Dashboard"></div>
+
+  <template id="page-content">
+    <section aria-label="Quick actions" class="card" style="margin-bottom:24px">
+      <div class="card__header"><h2>Quick Actions</h2></div>
+      <div class="actions">
+        <a class="btn" href="approvals.html">✅ Review Pending Packages</a>
+        <a class="btn btn--outline" href="users.html">👥 Manage Users</a>
+        <a class="btn btn--outline" href="bookings.html">🎫 Monitor Bookings</a>
+      </div>
+    </section>
+
+    <section aria-label="Statistics"><div id="statsGrid"></div></section>
+
+    <section class="card" aria-label="Pending packages">
+      <div class="card__header">
+        <h2>Packages Awaiting Approval</h2>
+        <a href="approvals.html">View all →</a>
+      </div>
+      <div id="pendingList"></div>
+    </section>
+  </template>
+
+  <script src="../js/dashboard-common.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
