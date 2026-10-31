@@ -153,7 +153,7 @@ function initRegisterForm() {
     }
 
     // ── Submit
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async(e) => {
         e.preventDefault();
         let valid = true;
 
@@ -197,11 +197,54 @@ function initRegisterForm() {
         }
 
         // Simulate success (tomorrow: replace with fetch POST /api/auth/register)
-        hideFormAlert(formAlert);
-        showFormAlert(formAlert, "Registration successful! Redirecting to login…", "success");
-        setTimeout(() => { window.location.href = "login.html"; }, 1800);
-    });
-}
+        // Send registration data to backend
+        const registerBtn = document.getElementById("registerBtn");
+
+        registerBtn.disabled = true;
+        registerBtn.textContent = "Creating account...";
+
+        try {
+            const response = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    mobile,
+                    password: pass,
+                    confirm_password: confirm,
+                    role: roleEl.value
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                showFormAlert(formAlert, data.message, "error");
+                return;
+            }
+
+            showFormAlert(
+                formAlert,
+                "Registration successful! Redirecting to login...",
+                "success"
+            );
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1800);
+
+        } catch (error) {
+            showFormAlert(formAlert, "Unable to connect to the server.", "error");
+
+        } finally {
+            registerBtn.disabled = false;
+            registerBtn.textContent = "Create My Account →";
+        }
+            });
+        }
 
 // ── LOGIN form logic ──────────────────────────────────────────
 function initLoginForm() {
@@ -212,7 +255,7 @@ function initLoginForm() {
     const passwordInput = document.getElementById("loginPassword");
     const formAlert     = document.getElementById("loginAlert");
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async(e) => {
         e.preventDefault();
         let valid = true;
 
@@ -238,10 +281,38 @@ function initLoginForm() {
             return;
         }
 
-        // Simulate login (tomorrow: replace with fetch POST /api/auth/login)
-        hideFormAlert(formAlert);
-        showFormAlert(formAlert, "Login successful! Redirecting…", "success");
-        setTimeout(() => { window.location.href = "index.html"; }, 1500);
+        // Connect to backend login API
+hideFormAlert(formAlert);
+
+try {
+    const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email,
+            password: pass
+        })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        showFormAlert(formAlert, data.message || "Login failed.", "error");
+        return;
+    }
+
+    showFormAlert(formAlert, "Login successful! Redirecting…", "success");
+
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 1500);
+
+} catch (error) {
+    console.error("Login error:", error);
+    showFormAlert(formAlert, "Unable to connect to the server.", "error");
+}
     });
 
     // Clear errors on input

@@ -4,94 +4,11 @@
    (Tomorrow: replace `packages` array with fetch('/api/packages'))
    ============================================================ */
 
-// ── Static Package Data ──────────────────────────────────────
-// Schema matches the planned DB model — API-ready shape.
-const packages = [
-    {
-        id: 1,
-        title: "Madurai Heritage Walk",
-        destination: "Madurai",
-        category: "Heritage",
-        duration: 1,
-        price: 999,
-        rating: 4.7,
-        reviews: 214,
-        available_from: "2026-11-01",
-        badge: "Bestseller",
-        mode: ["legends"],
-        image: "https://images.unsplash.com/photo-1602643163983-ed0babc39797?auto=format&fit=crop&w=700&q=80"
-    },
-    {
-        id: 2,
-        title: "Meenakshi Temple Deep Dive",
-        destination: "Madurai",
-        category: "Culture",
-        duration: 2,
-        price: 2499,
-        rating: 4.9,
-        reviews: 88,
-        available_from: "2026-11-05",
-        badge: "New",
-        mode: ["legends", "tribe"],
-        image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=700&q=80"
-    },
-    {
-        id: 3,
-        title: "Ooty Hills Escape",
-        destination: "Ooty",
-        category: "Nature",
-        duration: 3,
-        price: 3499,
-        rating: 4.6,
-        reviews: 176,
-        available_from: "2026-11-03",
-        badge: null,
-        mode: ["tribe"],
-        image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=700&q=80"
-    },
-    {
-        id: 4,
-        title: "Nilgiri Eco Trek",
-        destination: "Ooty",
-        category: "Eco",
-        duration: 2,
-        price: 2799,
-        rating: 4.8,
-        reviews: 103,
-        available_from: "2026-11-07",
-        badge: "Eco",
-        mode: ["eco"],
-        image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=80"
-    },
-    {
-        id: 5,
-        title: "Pondicherry Coastal Tour",
-        destination: "Pondicherry",
-        category: "Beach",
-        duration: 2,
-        price: 2499,
-        rating: 4.5,
-        reviews: 142,
-        available_from: "2026-11-02",
-        badge: null,
-        mode: ["tribe", "eco"],
-        image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=700&q=80"
-    },
-    {
-        id: 6,
-        title: "French Quarter Cultural Walk",
-        destination: "Pondicherry",
-        category: "Culture",
-        duration: 1,
-        price: 799,
-        rating: 4.4,
-        reviews: 59,
-        available_from: "2026-11-01",
-        badge: null,
-        mode: ["legends"],
-        image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=700&q=80"
-    }
-];
+let packages = [];
+
+let currentPackageId = null;
+let currentBookingId = null;
+
 
 // ── DOM refs ─────────────────────────────────────────────────
 const packageList  = document.getElementById("package-list");
@@ -202,9 +119,8 @@ function renderPackages(items) {
         bookBtn.textContent = "Book Now";
         bookBtn.setAttribute("data-id", tour.id);
         bookBtn.addEventListener("click", () => {
-            // Tomorrow: link to booking page / API
-            alert(`Booking for "${tour.title}" coming soon! 🚀`);
-        });
+    openPackageDetails(tour.id);
+});
 
         footer.append(priceBlock, bookBtn);
         info.append(meta, title, desc, ratingRow, footer);
@@ -213,6 +129,227 @@ function renderPackages(items) {
     });
 }
 
+async function openPackageDetails(packageId) {
+    currentPackageId = packageId;
+    const modal = document.getElementById("package-modal");
+    const details = document.getElementById("package-details");
+    const dateSelect = document.getElementById("availability-date");
+
+    modal.style.display = "flex";
+    details.textContent = "Loading package details...";
+    dateSelect.innerHTML = '<option value="">Select a date</option>';
+
+    try {
+        const [packageResponse, availabilityResponse] = await Promise.all([
+            fetch(`/api/packages/${packageId}`),
+            fetch(`/api/packages/${packageId}/availability`)
+        ]);
+
+        const packageData = await packageResponse.json();
+        const availabilityData = await availabilityResponse.json();
+
+        if (!packageResponse.ok || !availabilityResponse.ok) {
+            throw new Error("Unable to load package information.");
+        }
+
+        const tour = packageData.package || packageData;
+        const dates = Array.isArray(availabilityData)
+            ? availabilityData
+            : availabilityData.availability || [];
+
+        details.innerHTML = `
+            <h2>${tour.title}</h2>
+            <p>${tour.description || "Explore this local experience."}</p>
+            <p>📍 ${tour.destination}</p>
+            <p>Category: ${tour.category}</p>
+            <p>Duration: ${tour.duration} days</p>
+            <p>Price: ₹${Number(tour.price).toLocaleString("en-IN")} per person</p>
+            <p>Rating: ${tour.rating || 0} (${tour.reviews || 0} reviews)</p>
+        `;
+
+        dates.forEach(date => {
+            if (date.is_available) {
+                const option = document.createElement("option");
+                option.value = date.availability_id;
+                option.textContent =
+                    `${new Date(date.available_date).toLocaleDateString("en-IN")} — ${date.remaining_seats} seats left`;
+                dateSelect.appendChild(option);
+            }
+        });
+
+        if (dateSelect.options.length === 1) {
+            dateSelect.innerHTML = '<option value="">No available dates</option>';
+        }
+
+    } catch (error) {
+        console.error("Package details error:", error);
+        details.textContent = "Unable to load package details. Please try again.";
+    }
+}
+async function makePayment() {
+    const paymentMethod =
+        document.getElementById("payment-method").value;
+    console.log("Payment booking ID:", currentBookingId);
+
+    try {
+        const response = await fetch("/api/payments", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+            booking_id: currentBookingId,
+            payment_method: paymentMethod
+        })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Payment failed.");
+        }
+
+        alert("Payment successful! Your booking is confirmed.");
+
+        document.getElementById("package-modal").style.display = "none";
+
+    } catch (error) {
+        console.error("Payment error:", error);
+        alert(error.message || "Unable to process payment.");
+    }
+}
+
+async function continueToBooking() {
+    const availabilityId = document.getElementById("availability-date").value;
+    const numberOfPeople = Number(
+        document.getElementById("number-of-people").value
+    );
+
+    if (!availabilityId) {
+        alert("Please select an available travel date.");
+        return;
+    }
+
+    if (!Number.isInteger(numberOfPeople) || numberOfPeople < 1) {
+        alert("Please enter a valid number of people.");
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/bookings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                package_id: currentPackageId,
+                availability_id: Number(availabilityId),
+                number_of_people: numberOfPeople
+            })
+        });
+
+        const data = await response.json();
+        console.log("Booking response:", data);
+
+        if (response.status === 401) {
+            alert("Please login before booking.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(data.message || "Booking failed.");
+        }
+
+        currentBookingId = data.booking.booking_id;
+
+        if (!currentBookingId) {
+            throw new Error("Booking ID was not returned by the server.");
+        }
+
+        document.getElementById("continue-booking").style.display = "none";
+        document.getElementById("payment-section").style.display = "block";
+
+        document.getElementById("payment-amount").textContent =
+            "Booking created! Total: ₹" +
+            Number(data.total_amount || data.booking?.total_amount || 0)
+                .toLocaleString("en-IN");
+
+            } catch (error) {
+                console.error("Booking error:", error);
+                alert(error.message || "Unable to complete booking.");
+            }
+        }
+// ── Authentication status ─────────────────────────────
+
+async function checkLoginStatus() {
+    const loginBtn = document.getElementById("nav-login");
+    const registerBtn = document.getElementById("nav-register");
+    const userDisplay = document.getElementById("nav-user");
+    const logoutBtn = document.getElementById("nav-logout");
+    const bookingsLink = document.getElementById("nav-bookings");
+
+    if (!loginBtn || !registerBtn || !userDisplay ||
+    !logoutBtn || !bookingsLink) {
+    return;
+}
+    // Handle logout
+logoutBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+        const response = await fetch("/api/auth/logout", {
+            method: "POST"
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            window.location.reload();
+        } else {
+            alert("Logout failed. Please try again.");
+        }
+
+    } catch (error) {
+        console.error("Logout error:", error);
+        alert("Unable to connect to the server.");
+    }
+});
+
+    try {
+        const response = await fetch("/api/auth/me");
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            loginBtn.style.display = "none";
+            registerBtn.style.display = "none";
+
+            userDisplay.textContent = `Welcome, ${data.user.name}`;
+            userDisplay.style.display = "inline";
+
+            logoutBtn.style.display = "inline-block";
+
+            // Show My Bookings only for customers
+            if (data.user.role === "customer") {
+                bookingsLink.style.display = "inline-block";
+            } else {
+                bookingsLink.style.display = "none";
+            }
+        } else {
+            loginBtn.style.display = "inline";
+            registerBtn.style.display = "inline";
+
+            userDisplay.style.display = "none";
+            logoutBtn.style.display = "none";
+        }
+
+    } catch (error) {
+        console.error("Authentication check failed:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", checkLoginStatus);
 // ── Navbar scroll shadow ──────────────────────────────────────
 const navbar = document.getElementById("navbar");
 window.addEventListener("scroll", () => {
@@ -232,5 +369,39 @@ navLinks.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => navLinks.classList.remove("open"));
 });
 
-// ── Initial render ────────────────────────────────────────────
-renderPackages(packages);
+
+
+// ── Fetch packages from backend ──
+
+async function loadPackages() {
+    try {
+        const response = await fetch("/api/packages");
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to load packages");
+        }
+
+        packages = Array.isArray(data) ? data : data.packages;
+
+        if (!Array.isArray(packages)) {
+            throw new Error("Invalid package data received");
+        }
+
+        renderPackages(packages);
+
+    } catch (error) {
+        console.error("Package loading error:", error);
+        packageList.replaceChildren();
+        emptyMessage.textContent = "Unable to load packages. Please try again.";
+        emptyMessage.style.display = "block";
+    }
+}
+document.getElementById("close-package-modal").addEventListener("click", () => {
+    document.getElementById("package-modal").style.display = "none";
+});
+document.getElementById("continue-booking")
+    .addEventListener("click", continueToBooking);
+document.getElementById("pay-now")
+    .addEventListener("click", makePayment);
+loadPackages();

@@ -20,16 +20,24 @@
         </a>
 
         <nav class="nav-links" id="navLinks">
-            <a href="#packages"    id="nav-packages">Packages</a>
-            <a href="#destinations" id="nav-destinations">Destinations</a>
-            <a href="#travel-tribe" id="nav-tribe">Travel Tribe</a>
-            <a href="#local-legends" id="nav-legends">Local Legends</a>
-            <a href="#eco-trail"    id="nav-eco">EcoTrail</a>
+        <a href="#packages" id="nav-packages">Packages</a>
+        <a href="#destinations" id="nav-destinations">Destinations</a>
+        <a href="#travel-tribe" id="nav-tribe">Travel Tribe</a>
+        <a href="#local-legends" id="nav-legends">Local Legends</a>
+        <a href="#eco-trail" id="nav-eco">EcoTrail</a>
+        <a href="my-bookings.html" id="nav-bookings" style="display: none;">My Bookings</a>
         </nav>
 
         <div class="nav-actions">
-            <a href="login.html"    class="login-btn"    id="nav-login">Login</a>
+            <a href="login.html" class="login-btn" id="nav-login">Login</a>
+
             <a href="register.html" class="register-btn" id="nav-register">Register</a>
+
+            <span id="nav-user" style="display: none;"></span>
+
+            <a href="#" class="login-btn" id="nav-logout" style="display: none;">
+    Logout
+</a>
             <button class="hamburger" id="hamburger" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
@@ -205,6 +213,48 @@
 
             <div id="package-list" class="package-grid"></div>
             <p id="empty-message">No packages match your filters. Try adjusting the criteria.</p>
+            <!-- Package Details Modal -->
+<div id="package-modal" class="package-modal" style="display:none;">
+    <div class="package-modal-content">
+        <button id="close-package-modal" type="button">✕</button>
+
+        <div id="package-details">
+            Loading package details...
+        </div>
+
+        <div id="availability-section">
+            <h3>Available Travel Dates</h3>
+            <select id="availability-date">
+                <option value="">Select a date</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="number-of-people">Number of people</label>
+            <input type="number" id="number-of-people" min="1" value="1">
+        </div>
+
+        <button id="continue-booking" type="button">Continue to Booking</button>
+        <!-- Payment Section -->
+<div id="payment-section" style="display:none;">
+
+    <div class="payment-card">
+        <h3>💳 Complete Your Payment</h3>
+        <p id="payment-amount"></p>
+
+        <label for="payment-method">Select Payment Method</label>
+        <select id="payment-method">
+            <option value="UPI">UPI</option>
+            <option value="CARD">Credit / Debit Card</option>
+            <option value="NET_BANKING">Net Banking</option>
+        </select>
+
+        <button id="pay-now" type="button">Pay Now</button>
+    </div>
+
+</div>
+    </div>
+</div>
 
         </section>
 

@@ -25,30 +25,48 @@ function matchDuration(days, value) {
 }
 
 // ── Main filter function ──────────────────────────────────────
-function applyFilters() {
-    const query    = searchInput.value.trim().toLowerCase();
-    const dest     = filterDestination.value;
-    const cat      = filterCategory.value;
+async function applyFilters() {
+    const params = new URLSearchParams();
+
+    const query = searchInput.value.trim();
+    const dest = filterDestination.value;
+    const cat = filterCategory.value;
     const maxPrice = Number(filterPrice.value);
-    const dur      = filterDuration.value;
-    const date     = filterDate.value; // "YYYY-MM-DD" or ""
+    const dur = filterDuration.value;
+    const date = filterDate.value;
 
-    const filtered = packages.filter(p => {
-        const matchQuery = !query ||
-            p.title.toLowerCase().includes(query) ||
-            p.destination.toLowerCase().includes(query) ||
-            p.category.toLowerCase().includes(query);
+    if (query) params.append("search", query);
+    if (dest) params.append("destination", dest);
+    if (cat) params.append("category", cat);
+    if (maxPrice && maxPrice < Number(filterPrice.max)) {
+        params.append("maxPrice", maxPrice);
+    }
+    if (dur) params.append("duration", dur);
+    if (date) params.append("date", date);
 
-        const matchDest  = !dest || p.destination === dest;
-        const matchCat   = !cat  || p.category === cat;
-        const matchPrice = !maxPrice || p.price <= maxPrice;
-        const matchDur   = matchDuration(p.duration, dur);
-        const matchDate  = !date || p.available_from <= date || !p.available_from;
+    try {
+        const response = await fetch(
+            `/api/packages?${params.toString()}`
+        );
 
-        return matchQuery && matchDest && matchCat && matchPrice && matchDur && matchDate;
-    });
+        const data = await response.json();
 
-    renderPackages(filtered);
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to filter packages");
+        }
+
+        packages = Array.isArray(data)
+            ? data
+            : data.packages;
+
+        renderPackages(packages);
+
+    } catch (error) {
+        console.error("Filter error:", error);
+        packageList.replaceChildren();
+        emptyMessage.textContent = "Unable to load packages.";
+        emptyMessage.style.display = "block";
+    }
 }
 
 // ── Price slider live display ──────────────────────────────────
@@ -73,17 +91,21 @@ function resetFilters() {
     filterPrice.value       = filterPrice.max;
     filterDate.value        = "";
     updatePriceDisplay();
-    renderPackages(packages);
+    applyFilters();
 }
 
 resetBtn.addEventListener("click", resetFilters);
 
 // ── Attach listeners ──────────────────────────────────────────
-[searchInput, filterDestination, filterCategory, filterDuration, filterDate]
-    .forEach(el => el.addEventListener("input",  applyFilters));
+// Search and date
+[searchInput, filterDate].forEach(el =>
+    el.addEventListener("input", applyFilters)
+);
 
-[filterDestination, filterCategory, filterDuration]
-    .forEach(el => el.addEventListener("change", applyFilters));
+// Dropdown filters
+[filterDestination, filterCategory, filterDuration].forEach(el =>
+    el.addEventListener("change", applyFilters)
+);
 
 // ── Initialise display ────────────────────────────────────────
 updatePriceDisplay();

@@ -627,6 +627,9 @@ input, select, textarea { font-family: var(--font); }
     gap: 10px;
     align-items: end;
 }
+.mode-tag.tribe   { background: rgba(79,70,229,0.85); color: #fff; }
+.mode-tag.legends { background: rgba(184,86,10,0.85); color: #fff; }
+.mode-tag.eco     { background: rgba(22,163,74,0.85);  color: #fff; }
 
 .btn-reset {
     padding: 10px 16px;
@@ -1604,4 +1607,201 @@ footer {
     .hero-stats { flex-direction: column; gap: 20px; align-items: center; }
     .hero-ctas { flex-direction: column; align-items: center; }
     .role-selector { grid-template-columns: 1fr; }
+}
+
+/* ================= PACKAGE DETAILS MODAL ================= */
+
+.package-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(20, 35, 30, 0.65);
+    backdrop-filter: blur(5px);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.package-modal-content {
+    position: relative;
+    background: #ffffff;
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    padding: 32px;
+    border-radius: 20px;
+    border: 1px solid #dce8df;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+
+    animation: modalAppear 0.25s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    .package-grid { grid-template-columns: 1fr; }
+    .destination-grid { grid-template-columns: 1fr 1fr; }
+
+    .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+
+    .auth-page { grid-template-columns: 1fr; }
+    .auth-visual { display: none; }
+    .auth-form-panel { padding: 40px 24px; }
+    .form-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .destination-grid { grid-template-columns: 1fr; }
+    .filter-bar { grid-template-columns: 1fr; }
+    .hero-stats { flex-direction: column; gap: 20px; align-items: center; }
+    .hero-ctas { flex-direction: column; align-items: center; }
+    .role-selector { grid-template-columns: 1fr; }
+}
+
+#close-package-modal {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+    background: #edf4ef;
+    color: #245849;
+
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#close-package-modal:hover {
+    background: #dcebe1;
+}
+
+#package-details {
+    padding-right: 20px;
+}
+
+#package-details h2 {
+    font-size: 26px;
+    color: #173e32;
+    margin-bottom: 12px;
+}
+
+#package-details p {
+    color: #65756d;
+    font-size: 14px;
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+#availability-section {
+    margin-top: 25px;
+}
+
+#availability-section h3 {
+    font-size: 17px;
+    color: #173e32;
+    margin-bottom: 12px;
+}
+
+#availability-date,
+#number-of-people {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d7e3da;
+    border-radius: 9px;
+    background: #fbfdfb;
+    color: #263c32;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+#number-of-people {
+    margin-bottom: 20px;
+}
+
+#continue-booking {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 30px;
+
+    background: #245849;
+    color: white;
+
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#continue-booking:hover {
+    background: #173e32;
+}
+
+@media (max-width: 600px) {
+    .package-modal-content {
+        padding: 25px 20px;
+    }
+
+    #package-details h2 {
+        font-size: 21px;
+    }
+}
+/* Payment Card */
+
+#payment-section {
+    margin-top: 22px;
+}
+
+.payment-card {
+    padding: 22px;
+    background: #f5faf6;
+    border: 1px solid #dce8df;
+    border-radius: 14px;
+}
+
+.payment-card h3 {
+    color: #173e32;
+    margin-bottom: 12px;
+}
+
+.payment-card p {
+    color: #245849;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.payment-card select {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0 18px;
+    border: 1px solid #d7e3da;
+    border-radius: 9px;
+}
+
+#pay-now {
+    width: 100%;
+    padding: 13px;
+    background: #245849;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: 700;
+    cursor: pointer;
 }
