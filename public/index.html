@@ -1,87 +1,610 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Local Trails | Discover Local Tourism</title>
+    <title>Local Trails | Travel Together. Discover Stories. Leave a Better Footprint.</title>
+    <meta name="description" content="Local Trails is a local tourism booking platform connecting travelers with authentic experiences. Choose from Travel Tribe, Local Legends, or EcoTrail modes.">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <header class="navbar">
-        <a href="index.html" class="logo">Local<span>Trails.</span></a>
+    <!-- ═══════════════════════════════════════════════════════
+         NAVBAR
+    ═══════════════════════════════════════════════════════ -->
+    <header class="navbar" id="navbar">
 
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#destinations">Destinations</a>
-            <a href="#packages">Packages</a>
+        <a href="index.html" class="logo-wrap" style="text-decoration:none;">
+            <span class="logo">Local<span>Trails.</span></span>
+            <span class="logo-tagline">Travel Together. Discover Stories. Leave a Better Footprint.</span>
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+        <a href="#packages" id="nav-packages">Packages</a>
+        <a href="#destinations" id="nav-destinations">Destinations</a>
+        <a href="#travel-tribe" id="nav-tribe">Travel Tribe</a>
+        <a href="#local-legends" id="nav-legends">Local Legends</a>
+        <a href="#eco-trail" id="nav-eco">EcoTrail</a>
+        <a href="my-bookings.html" id="nav-bookings" style="display: none;">My Bookings</a>
         </nav>
 
-        <a href="#" class="login-btn">Login</a>
+        <div class="nav-actions">
+            <a href="login.html" class="login-btn" id="nav-login">Login</a>
+
+            <a href="register.html" class="register-btn" id="nav-register">Register</a>
+
+            <span id="nav-user" style="display: none;"></span>
+
+            <a href="#" class="login-btn" id="nav-logout" style="display: none;">
+    Logout
+</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
     </header>
 
     <main>
-        <section class="hero" id="home">
-            <p class="eyebrow">DISCOVER YOUR NEXT ADVENTURE</p>
-            <h1>Explore local places.<br>Make lasting memories.</h1>
-            <p>Discover unique experiences and tours offered by local experts.</p>
 
-            <a href="#packages" class="primary-btn">Explore Packages →</a>
+        <!-- ═══════════════════════════════════════════════════
+             HERO
+        ═══════════════════════════════════════════════════ -->
+        <section class="hero" id="home">
+            <div class="hero-blob hero-blob-1"></div>
+            <div class="hero-blob hero-blob-2"></div>
+
+            <div class="hero-content">
+                <p class="eyebrow">🌿 DISCOVER YOUR NEXT ADVENTURE</p>
+                <h1>
+                    Explore Local Places.<br>
+                    Make <em>Lasting Memories.</em>
+                </h1>
+                <p class="hero-sub">
+                    Connect with local guides, join travel tribes, and discover
+                    hidden gems — while leaving a positive footprint on every journey.
+                </p>
+                <div class="hero-ctas">
+                    <a href="#packages"     class="btn btn-primary btn-pill" id="hero-explore-btn">Explore Packages →</a>
+                    <a href="#travel-tribe" class="btn btn-outline  btn-pill" id="hero-tribe-btn">Join a Tribe 🤝</a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <strong>120+</strong>
+                        <span>PACKAGES</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>18</strong>
+                        <span>DESTINATIONS</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>3,400+</strong>
+                        <span>HAPPY TRAVELERS</span>
+                    </div>
+                    <div class="hero-stat">
+                        <strong>4.8 ★</strong>
+                        <span>AVG. RATING</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <section class="section" id="destinations">
-            <p class="eyebrow">EXPLORE INDIA</p>
-            <h2>Popular Destinations</h2>
+        <!-- ═══════════════════════════════════════════════════
+             DESTINATIONS
+        ═══════════════════════════════════════════════════ -->
+        <section class="destinations-section" id="destinations">
+            <div class="section-header">
+                <span class="section-label">EXPLORE INDIA</span>
+                <h2>Popular Destinations</h2>
+                <p>From ancient temples to pristine coastlines — discover the soul of Tamil Nadu.</p>
+            </div>
 
             <div class="destination-grid">
+
                 <article class="destination-card">
-                    <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=600&q=80"
-                         alt="Traditional architecture in Tamil Nadu">
-                    <h3>Madurai</h3>
-                    <p>Temples & Heritage</p>
+                    <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80"
+                         alt="Meenakshi Amman Temple, Madurai">
+                    <div class="destination-overlay"></div>
+                    <div class="destination-info">
+                        <h3>Madurai</h3>
+                        <p>Temples & Heritage</p>
+                        <span class="destination-count">4 packages</span>
+                    </div>
                 </article>
 
                 <article class="destination-card">
-                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80"
-                         alt="Scenic green mountain landscape">
-                    <h3>Ooty</h3>
-                    <p>Hills & Nature</p>
+                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80"
+                         alt="Ooty Hills scenic viewpoint">
+                    <div class="destination-overlay"></div>
+                    <div class="destination-info">
+                        <h3>Ooty</h3>
+                        <p>Hills & Nature</p>
+                        <span class="destination-count">3 packages</span>
+                    </div>
                 </article>
 
                 <article class="destination-card">
-                    <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80"
-                         alt="Tropical coastal scenery">
-                    <h3>Pondicherry</h3>
-                    <p>Beaches & Culture</p>
+                    <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80"
+                         alt="Pondicherry seaside boulevard">
+                    <div class="destination-overlay"></div>
+                    <div class="destination-info">
+                        <h3>Pondicherry</h3>
+                        <p>Beaches & Culture</p>
+                        <span class="destination-count">3 packages</span>
+                    </div>
                 </article>
+
             </div>
         </section>
 
-        <section class="section packages-section" id="packages">
-            <p class="eyebrow">HANDPICKED EXPERIENCES</p>
-            <h2>Popular Tour Packages</h2>
-            <p class="section-description">
-                Find your next adventure with our local tour providers.
-            </p>
+        <!-- ═══════════════════════════════════════════════════
+             PACKAGES + FILTER
+        ═══════════════════════════════════════════════════ -->
+        <section class="packages-section" id="packages">
 
-            <div class="search-bar">
-                <input type="text" id="searchInput"
-                       placeholder="Search packages or destinations...">
-                <button id="searchButton" class="primary-btn">Search</button>
+            <div class="section-header">
+                <span class="section-label">HANDPICKED EXPERIENCES</span>
+                <h2>Tour Packages</h2>
+                <p>Browse curated packages from verified local providers.</p>
             </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar" id="filterBar" role="search" aria-label="Filter packages">
+
+                <div class="filter-group" style="grid-column: span 2;">
+                    <label for="searchInput">🔍 Search</label>
+                    <input type="text" id="searchInput"
+                           placeholder="Package name or destination…"
+                           autocomplete="off">
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterDestination">📍 Destination</label>
+                    <select id="filterDestination">
+                        <option value="">All Destinations</option>
+                        <option value="Madurai">Madurai</option>
+                        <option value="Ooty">Ooty</option>
+                        <option value="Pondicherry">Pondicherry</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterCategory">🏷️ Category</label>
+                    <select id="filterCategory">
+                        <option value="">All Categories</option>
+                        <option value="Heritage">Heritage</option>
+                        <option value="Nature">Nature</option>
+                        <option value="Beach">Beach</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Culture">Culture</option>
+                        <option value="Eco">Eco</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterDuration">⏱️ Duration</label>
+                    <select id="filterDuration">
+                        <option value="">Any Duration</option>
+                        <option value="1">1 Day</option>
+                        <option value="2-3">2–3 Days</option>
+                        <option value="4-7">4–7 Days</option>
+                        <option value="7+">7+ Days</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterPrice">💰 Max Price: <span id="priceDisplay">₹10,000</span></label>
+                    <input type="range" id="filterPrice"
+                           min="500" max="10000" step="500" value="10000">
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterDate">📅 Available From</label>
+                    <input type="date" id="filterDate">
+                </div>
+
+                <div class="filter-group" style="align-self: end;">
+                    <button class="btn-reset" id="resetFilters" type="button">✕ Reset</button>
+                </div>
+
+            </div>
+            <!-- /Filter Bar -->
 
             <div id="package-list" class="package-grid"></div>
-            <p id="empty-message" hidden>No matching packages found.</p>
+            <p id="empty-message">No packages match your filters. Try adjusting the criteria.</p>
+            <!-- Package Details Modal -->
+<div id="package-modal" class="package-modal" style="display:none;">
+    <div class="package-modal-content">
+        <button id="close-package-modal" type="button">✕</button>
+
+        <div id="package-details">
+            Loading package details...
+        </div>
+
+        <div id="availability-section">
+            <h3>Available Travel Dates</h3>
+            <select id="availability-date">
+                <option value="">Select a date</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="number-of-people">Number of people</label>
+            <input type="number" id="number-of-people" min="1" value="1">
+        </div>
+
+        <button id="continue-booking" type="button">Continue to Booking</button>
+        <!-- Payment Section -->
+<div id="payment-section" style="display:none;">
+
+    <div class="payment-card">
+        <h3>💳 Complete Your Payment</h3>
+        <p id="payment-amount"></p>
+
+        <label for="payment-method">Select Payment Method</label>
+        <select id="payment-method">
+            <option value="UPI">UPI</option>
+            <option value="CARD">Credit / Debit Card</option>
+            <option value="NET_BANKING">Net Banking</option>
+        </select>
+
+        <button id="pay-now" type="button">Pay Now</button>
+    </div>
+
+</div>
+    </div>
+</div>
+
         </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             TRAVEL TRIBE
+        ═══════════════════════════════════════════════════ -->
+        <section class="mode-section tribe-section" id="travel-tribe">
+            <div class="mode-section-inner">
+
+                <!-- Text Side -->
+                <div class="mode-section-text">
+                    <span class="mode-section-label tribe-label">🤝 TRAVEL TOGETHER</span>
+                    <h2>Plan Together.<br>Travel Better.</h2>
+                    <p>
+                        Create your travel tribe, invite friends, and plan your
+                        next adventure collaboratively. Vote on destinations,
+                        split costs, and make memories — together.
+                    </p>
+
+                    <div class="mode-features">
+                        <div class="mode-feature">
+                            <div class="icon-box tribe-icon">👥</div>
+                            <div class="mode-feature-text">
+                                <strong>Create &amp; Manage Travel Groups</strong>
+                                <p>Form a tribe, set a group name, and invite your friends with a single link.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box tribe-icon">🗳️</div>
+                            <div class="mode-feature-text">
+                                <strong>Vote on Destinations</strong>
+                                <p>Let every tribe member vote on the next destination. Democracy in travel.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box tribe-icon">💬</div>
+                            <div class="mode-feature-text">
+                                <strong>Collaborate on Itineraries</strong>
+                                <p>Build the trip plan together, add stops, and share notes in real time.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box tribe-icon">💰</div>
+                            <div class="mode-feature-text">
+                                <strong>Shared Budget Tracking</strong>
+                                <p>Split costs fairly, track group spending, and never miss a payment.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="register.html" class="btn btn-tribe" id="tribe-cta">Start a Tribe →</a>
+                </div>
+
+                <!-- Visual Side -->
+                <div class="mode-visual">
+                    <div class="mode-card-stack">
+
+                        <div class="mode-card tribe-card-main">
+                            <p class="mode-card-title tribe-card-title">OOTY ESCAPADE TRIBE</p>
+                            <div class="member-pile">
+                                <div class="member-avatar avatar-a">A</div>
+                                <div class="member-avatar avatar-b">R</div>
+                                <div class="member-avatar avatar-c">S</div>
+                                <div class="member-avatar avatar-d">P</div>
+                                <div class="member-avatar avatar-more">+3</div>
+                            </div>
+                            <p style="font-size:12px;color:var(--muted);margin-bottom:14px;">7 members · Voting in progress</p>
+
+                            <div class="tribe-vote-row">
+                                <span>🏔️ Ooty Hills</span>
+                                <div class="vote-bar-wrap"><div class="vote-bar" style="width:70%"></div></div>
+                                <span style="font-size:12px;color:var(--tribe);font-weight:600;">70%</span>
+                            </div>
+                            <div class="tribe-vote-row">
+                                <span>🏖️ Pondy Beach</span>
+                                <div class="vote-bar-wrap"><div class="vote-bar" style="width:30%"></div></div>
+                                <span style="font-size:12px;color:var(--tribe);font-weight:600;">30%</span>
+                            </div>
+                        </div>
+
+                        <div class="mode-card tribe-card-sub">
+                            <p class="mode-card-title tribe-card-title">GROUP BUDGET</p>
+                            <div class="budget-row">
+                                <span>Packages</span>
+                                <strong>₹14,000</strong>
+                            </div>
+                            <div class="budget-row">
+                                <span>Transport</span>
+                                <strong>₹3,200</strong>
+                            </div>
+                            <div class="budget-row">
+                                <span>Your share</span>
+                                <strong style="color:var(--accent);">₹2,457</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             LOCAL LEGENDS
+        ═══════════════════════════════════════════════════ -->
+        <section class="mode-section legends-section" id="local-legends">
+            <div class="mode-section-inner reverse">
+
+                <!-- Text Side -->
+                <div class="mode-section-text">
+                    <span class="mode-section-label legends-label">🏺 EXPLORE LOCAL CULTURE</span>
+                    <h2>Discover Hidden<br>Gems.</h2>
+                    <p>
+                        Dive deep into local stories, traditions, and living heritage.
+                        Book authentic experiences with local artisans and guides,
+                        and earn cultural achievement badges as you explore.
+                    </p>
+
+                    <div class="mode-features">
+                        <div class="mode-feature">
+                            <div class="icon-box legends-icon">🗺️</div>
+                            <div class="mode-feature-text">
+                                <strong>Discover Hidden Cultural Spots</strong>
+                                <p>Go beyond tourist trails and find places only locals know about.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box legends-icon">🎭</div>
+                            <div class="mode-feature-text">
+                                <strong>Local Stories &amp; Traditions</strong>
+                                <p>Hear folklore, witness rituals, and immerse in living culture.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box legends-icon">🧑‍🎨</div>
+                            <div class="mode-feature-text">
+                                <strong>Book with Local Guides &amp; Artisans</strong>
+                                <p>Support local livelihoods; every booking empowers a local expert.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box legends-icon">🏅</div>
+                            <div class="mode-feature-text">
+                                <strong>Earn Cultural Achievement Badges</strong>
+                                <p>Collect badges for each unique cultural experience completed.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="register.html" class="btn btn-legends" id="legends-cta">Become a Legend →</a>
+                </div>
+
+                <!-- Visual Side -->
+                <div class="mode-visual">
+                    <div class="mode-card-stack">
+
+                        <div class="mode-card legends-card-main">
+                            <p class="mode-card-title legends-card-title">YOUR CULTURAL JOURNEY</p>
+                            <div class="badge-list">
+                                <div class="badge-item">
+                                    <span class="badge-icon">🕌</span>
+                                    <div class="badge-info">
+                                        <strong>Temple Explorer</strong>
+                                        <span>Visited 3 heritage temples</span>
+                                    </div>
+                                </div>
+                                <div class="badge-item">
+                                    <span class="badge-icon">🍛</span>
+                                    <div class="badge-info">
+                                        <strong>Culinary Discoverer</strong>
+                                        <span>Tried 5 local dishes</span>
+                                    </div>
+                                </div>
+                                <div class="badge-item">
+                                    <span class="badge-icon">🎨</span>
+                                    <div class="badge-info">
+                                        <strong>Artisan Supporter</strong>
+                                        <span>Booked 2 artisan experiences</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mode-card legends-card-sub">
+                            <p class="mode-card-title legends-card-title">NEXT BADGE</p>
+                            <div style="text-align:center;padding:12px 0;">
+                                <span style="font-size:36px;">🧵</span>
+                                <p style="font-size:13px;font-weight:700;margin-top:6px;">Craft Keeper</p>
+                                <p style="font-size:11px;color:var(--muted);">Book 1 more artisan tour</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             ECOTRAIL
+        ═══════════════════════════════════════════════════ -->
+        <section class="mode-section eco-section" id="eco-trail">
+            <div class="mode-section-inner">
+
+                <!-- Text Side -->
+                <div class="mode-section-text">
+                    <span class="mode-section-label eco-label">🌿 TRAVEL RESPONSIBLY</span>
+                    <h2>Leave a Better<br>Footprint.</h2>
+                    <p>
+                        Choose sustainable tourism packages, understand your
+                        environmental impact before you book, and earn eco-points
+                        for every responsible choice you make on the road.
+                    </p>
+
+                    <div class="mode-features">
+                        <div class="mode-feature">
+                            <div class="icon-box eco-icon">♻️</div>
+                            <div class="mode-feature-text">
+                                <strong>Sustainable Tourism Packages</strong>
+                                <p>All EcoTrail packages are vetted for low environmental impact.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box eco-icon">🌍</div>
+                            <div class="mode-feature-text">
+                                <strong>Estimated CO₂ Impact</strong>
+                                <p>See the estimated carbon footprint of each tour before you book.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box eco-icon">🔋</div>
+                            <div class="mode-feature-text">
+                                <strong>Compare Eco-Friendly Options</strong>
+                                <p>Side-by-side eco-score comparison across similar packages.</p>
+                            </div>
+                        </div>
+                        <div class="mode-feature">
+                            <div class="icon-box eco-icon">🌟</div>
+                            <div class="mode-feature-text">
+                                <strong>Earn Eco-Points &amp; Badges</strong>
+                                <p>Every green choice earns points redeemable on future bookings.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="register.html" class="btn btn-eco" id="eco-cta">Explore EcoTrails →</a>
+                </div>
+
+                <!-- Visual Side — Eco Impact Widget -->
+                <div class="mode-visual">
+                    <div class="eco-impact-widget">
+                        <p class="eco-impact-title">🌿 EcoTrail Impact Dashboard</p>
+
+                        <div class="eco-stat-row">
+                            <div class="eco-stat">
+                                <strong>2.4<span style="font-size:14px;">kg</span></strong>
+                                <span>CO₂ SAVED<br>this tour</span>
+                            </div>
+                            <div class="eco-stat">
+                                <strong>680</strong>
+                                <span>ECO-POINTS<br>earned</span>
+                            </div>
+                            <div class="eco-stat">
+                                <strong>3</strong>
+                                <span>BADGES<br>collected</span>
+                            </div>
+                        </div>
+
+                        <div class="eco-points-bar">
+                            <div class="eco-points-bar-label">
+                                <span>Eco-Points Progress</span>
+                                <span>680 / 1000</span>
+                            </div>
+                            <div class="eco-points-bar-track">
+                                <div class="eco-points-bar-fill"></div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
+                            <p style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">
+                                Eco Badges Earned
+                            </p>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                                <div style="text-align:center;">
+                                    <span style="font-size:28px;">🌱</span>
+                                    <p style="font-size:10px;color:var(--eco);font-weight:600;margin-top:4px;">Green Start</p>
+                                </div>
+                                <div style="text-align:center;">
+                                    <span style="font-size:28px;">🚶</span>
+                                    <p style="font-size:10px;color:var(--eco);font-weight:600;margin-top:4px;">Low Carbon</p>
+                                </div>
+                                <div style="text-align:center;">
+                                    <span style="font-size:28px;">🌊</span>
+                                    <p style="font-size:10px;color:var(--eco);font-weight:600;margin-top:4px;">Ocean Saver</p>
+                                </div>
+                                <div style="text-align:center;opacity:0.35;">
+                                    <span style="font-size:28px;">🦋</span>
+                                    <p style="font-size:10px;color:var(--muted);font-weight:600;margin-top:4px;">Locked</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
     </main>
 
+    <!-- ═══════════════════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════════════════ -->
     <footer>
-        <a href="#home" class="logo">Local<span>Trails.</span></a>
-        <p>Discover more. Travel local.</p>
-        <p>© 2026 Local Trails</p>
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <a href="index.html" class="logo">Local<span>Trails.</span></a>
+                <p>
+                    Connecting travelers with authentic local experiences.
+                    Travel together, discover stories, and leave a better footprint.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <a href="#packages">All Packages</a>
+                <a href="#destinations">Destinations</a>
+                <a href="#travel-tribe">Travel Tribe</a>
+                <a href="#local-legends">Local Legends</a>
+                <a href="#eco-trail">EcoTrail</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="login.html">Login</a>
+                <a href="register.html">Register</a>
+                <a href="#">My Bookings</a>
+                <a href="#">My Tribe Passport</a>
+                <a href="#">Become a Provider</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Local Trails. All rights reserved.</p>
+            <p>Made with 💚 for local explorers</p>
+        </div>
     </footer>
 
     <script src="js/app.js"></script>
+    <script src="js/filter.js"></script>
 </body>
 </html>
