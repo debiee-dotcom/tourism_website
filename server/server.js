@@ -6,6 +6,8 @@ const crypto = require("crypto");
 
 const http = require("http");
 const db = require("./db");
+
+
 function getRequestBody(req) {
     return new Promise((resolve, reject) => {
         let body = "";
@@ -34,6 +36,12 @@ function getRequestBody(req) {
 const sessions = new Map();
 
 const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+const createProviderRoutes = require("./providerRoutes");
+const handleProviderRoutes = createProviderRoutes({
+    db,
+    sessions,
+    getRequestBody
+});
 const server = http.createServer(async (req, res) => {
     res.setHeader("Content-Type", "application/json");
 
@@ -48,6 +56,7 @@ const server = http.createServer(async (req, res) => {
                 message: "Tourism Booking API is running",
                 database: "Connected"
             }));
+            
         } catch (error) {
             console.error(error.message);
             res.writeHead(500);
@@ -58,6 +67,7 @@ const server = http.createServer(async (req, res) => {
         }
         return;
     }
+
 
 
 // GET: Retrieve logged-in customer's booking history
@@ -1557,7 +1567,8 @@ if (req.method === "POST" && req.url === "/api/auth/logout") {
 
 
     // Serve frontend files from public folder
-if (req.method === "GET") {
+if (req.method === "GET"&&
+    !req.url.startsWith("/api/")) {
     const publicDir = path.join(__dirname, "../public");
 
     const pathname = new URL(req.url, "http://localhost").pathname;
@@ -1598,8 +1609,12 @@ if (req.method === "GET") {
 
         return;
     }
+    
 }
+await handleProviderRoutes(req, res);
 
+if (res.writableEnded) return;
+   
 // Unknown route
 res.writeHead(404);
 res.end(JSON.stringify({
