@@ -1,4 +1,3 @@
-/* LocalTrails dashboards: real session-authenticated APIs, no mock data. */
 (() => {
   'use strict';
   const role = document.body.dataset.role;
