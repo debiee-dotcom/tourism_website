@@ -36,6 +36,29 @@ function getRequestBody(req) {
 const sessions = new Map();
 
 const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+// Separate HttpOnly sessions allow customer, provider and administrators to
+// remain signed in concurrently in tabs of the same browser.
+const COOKIE_BY_ROLE = Object.freeze({
+    customer: 'sessionId', provider: 'providerSessionId',
+    admin: 'adminSessionId', super_admin: 'superAdminSessionId'
+});
+function authRole(req) {
+    const role = new URL(req.url, 'http://localhost').searchParams.get('role') || 'customer';
+    return Object.hasOwn(COOKIE_BY_ROLE, role) ? role : null;
+}
+function roleSession(req, role) {
+    const cookieName = COOKIE_BY_ROLE[role];
+    if (!cookieName) return { id: null, session: null };
+    const pair = (req.headers.cookie || '').split(';').map(c => c.trim())
+        .find(c => c.startsWith(cookieName + '='));
+    const id = pair ? pair.slice(cookieName.length + 1) : null;
+    const session = id && sessions.get(id);
+    if (!session || session.role !== role || session.expiresAt <= Date.now()) {
+        if (id && session && session.expiresAt <= Date.now()) sessions.delete(id);
+        return { id: null, session: null };
+    }
+    return { id, session };
+}
 const createProviderRoutes = require("./providerRoutes");
 const handleAdminRoutes = require("./adminRoutes")({ db, sessions, getRequestBody });
 const handleProviderRoutes = createProviderRoutes({
@@ -1046,7 +1069,7 @@ if (req.method === "GET" && /^\/api\/packages\/\d+$/.test(req.url.split("?")[0])
             FROM reviews
             GROUP BY package_id
         ) rv ON p.package_id = rv.package_id
-            WHERE p.package_id = ?
+            WHERE p.package_id = ? AND p.status = 'active'
         `, [packageId]);
 
         // Check whether package exists
@@ -1107,7 +1130,7 @@ if (
 
         // Check whether package exists
         const [packages] = await db.query(
-            "SELECT package_id FROM packages WHERE package_id = ?",
+            "SELECT package_id FROM packages WHERE package_id = ? AND status = 'active'",
             [packageId]
         );
 
@@ -1429,7 +1452,7 @@ if (req.method === "POST" && req.url === "/api/auth/register") {
 // User login
 if (req.method === "POST" && req.url === "/api/auth/login") {
     try {
-        const { email, password } = await getRequestBody(req);
+        const { email, password, requestedRole: reqLoginRole } = await getRequestBody(req);
 
         if (!email || !password) {
             res.writeHead(400);
@@ -1476,6 +1499,14 @@ if (req.method === "POST" && req.url === "/api/auth/login") {
             res.end(JSON.stringify({success:false,message:'Your account is not active'}));
             return;
         }
+        // Dedicated staff portals must authenticate only accounts for their own role.
+        // A mismatch must never create a role cookie.
+        const requestedRole = reqLoginRole;
+        if (requestedRole && (!['admin', 'super_admin', 'provider', 'customer'].includes(requestedRole) || user.role !== requestedRole)) {
+            res.writeHead(403, {'Content-Type':'application/json'});
+            res.end(JSON.stringify({success:false,message:'This account is not authorized for this portal.'}));
+            return;
+        }
         // Create a new session
         const sessionId = crypto.randomBytes(32).toString("hex");
 
@@ -1490,7 +1521,7 @@ if (req.method === "POST" && req.url === "/api/auth/login") {
         // Send session ID as an HTTP-only cookie
         res.setHeader(
             "Set-Cookie",
-            `sessionId=${sessionId}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400`
+            `${COOKIE_BY_ROLE[user.role]}=${sessionId}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400${process.env.NODE_ENV === "production" ? "; Secure" : ""}`
         );
 
         res.writeHead(200);
@@ -1517,77 +1548,29 @@ if (req.method === "POST" && req.url === "/api/auth/login") {
 
     return;
 }
-// Check whether the user is logged in
-if (req.method === "GET" && req.url === "/api/auth/me") {
-    const cookies = req.headers.cookie || "";
-
-    const sessionCookie = cookies
-        .split(";")
-        .find(cookie => cookie.trim().startsWith("sessionId="));
-
-    if (!sessionCookie) {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({
-            success: false,
-            message: "Not logged in"
-        }));
-        return;
+// Query parameter 'role' identifies which independently signed-in dashboard is checked.
+if (req.method === 'GET' && req.url.split('?')[0] === '/api/auth/me') {
+    const role = authRole(req);
+    if (!role) { res.writeHead(400); res.end(JSON.stringify({message:'Invalid role'})); return; }
+    const {session} = roleSession(req, role);
+    if (!session) { res.writeHead(401); res.end(JSON.stringify({message:'Not logged in'})); return; }
+    // Do not trust stale session roles/status after administrators change accounts.
+    const [accounts] = await db.query('SELECT role, status FROM users WHERE user_id = ?', [session.userId]);
+    if (!accounts.length || accounts[0].role !== role || accounts[0].status !== 'active') {
+        res.writeHead(403); res.end(JSON.stringify({message:'Account is not active'})); return;
     }
-
-    const sessionId = sessionCookie.trim().split("=")[1];
-    const session = sessions.get(sessionId);
-
-    if (!session || session.expiresAt < Date.now()) {
-        sessions.delete(sessionId);
-
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({
-            success: false,
-            message: "Session expired or invalid"
-        }));
-        return;
-    }
-
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({
-        success: true,
-        user: {
-            id: session.userId,
-            name: session.name,
-            email: session.email,
-            role: session.role
-        }
-    }));
-
+    res.writeHead(200); res.end(JSON.stringify({success:true,user:{id:session.userId,name:session.name,email:session.email,role:session.role}}));
     return;
 }
-
-// Log out the user
-if (req.method === "POST" && req.url === "/api/auth/logout") {
-    const cookies = req.headers.cookie || "";
-
-    const sessionCookie = cookies
-        .split(";")
-        .find(cookie => cookie.trim().startsWith("sessionId="));
-
-    if (sessionCookie) {
-        const sessionId = sessionCookie.trim().split("=")[1];
-        sessions.delete(sessionId);
-    }
-
-    res.writeHead(200, {
-        "Content-Type": "application/json",
-        "Set-Cookie": "sessionId=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0"
-    });
-
-    res.end(JSON.stringify({
-        success: true,
-        message: "Logged out successfully"
-    }));
-
+if (req.method === 'POST' && req.url.split('?')[0] === '/api/auth/logout') {
+    const role = authRole(req);
+    if (!role) { res.writeHead(400); res.end(JSON.stringify({message:'Invalid role'})); return; }
+    const {id} = roleSession(req, role);
+    if (id) sessions.delete(id);
+    res.writeHead(200, {'Set-Cookie':`${COOKIE_BY_ROLE[role]}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`});
+    res.end(JSON.stringify({success:true,message:'Logged out successfully'}));
     return;
 }
-
 
     // Serve frontend files from public folder
 if (req.method === "GET"&&

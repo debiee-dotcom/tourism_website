@@ -1,3 +1,4 @@
+/* LocalTrails dashboards: real session-authenticated APIs, no mock data. */
 (() => {
   'use strict';
   const role = document.body.dataset.role;
@@ -7,6 +8,7 @@
   const sections = provider
     ? [['overview','Overview'],['packages','My packages'],['availability','Availability'],['bookings','Bookings'],['reviews','Reviews'],['earnings','Earnings']]
     : [['overview','Overview'],['providers','Provider approvals'],['packages','Package approvals'],['bookings','All bookings'],['customers','Customers'],...(superAdmin?[['admins','Administrators']]:[])];
+  const navIcons = {overview:'▦',packages:'▤',availability:'▣',bookings:'▥',reviews:'✧',earnings:'↗',providers:'♧',customers:'♙',admins:'♜'};
   let section='overview', cache={}, catalog=null, account=null;
   const app=document.getElementById('app');
   const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -20,15 +22,15 @@
     if(!resp.ok) throw Error(json.message||`Request failed (${resp.status})`);
     return json.data ?? json;
   }
-  const api=(path='',method='GET',body)=>request(apiRoot+path,method,body);
+  const api=(path='',method='GET',body)=>request(apiRoot+path+(provider?'':'?role='+encodeURIComponent(role)),method,body);
   const cell=s=>`<td>${e(s??'—')}</td>`;
   function table(headers,rows) {return `<div class="panel"><div class="table-wrap"><table><thead><tr>${headers.map(x=>`<th>${e(x)}</th>`).join('')}</tr></thead><tbody>${rows.length?rows.join(''):`<tr><td colspan="${headers.length}" class="empty">No records found</td></tr>`}</tbody></table></div></div>`;}
   const btn=(name,id,label,cls='')=>`<button type="button" class="table-btn ${cls}" data-task="${e(name)}" data-id="${e(id)}">${e(label)}</button>`;
   const stat=(label,value)=>`<article class="stat-card"><div class="stat-head">${e(label)}</div><strong>${e(value)}</strong></article>`;
   const stats=items=>`<div class="stats-grid">${items.map(([k,v])=>stat(k,v)).join('')}</div>`;
   function flash(message,error=false){const node=document.getElementById('message');node.textContent=message;node.className='message '+(error?'error':'success');}
-  function shell(){app.innerHTML=`<div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="/"><span class="brand-icon">L</span><span><strong>LocalTrails</strong><small>TOURISM PLATFORM</small></span></a><div class="work-label">${provider?'PROVIDER':superAdmin?'SUPER ADMIN':'ADMIN'} WORKSPACE</div><nav class="nav">${sections.map(([key,label])=>`<a href="#${key}" data-nav="${key}">${e(label)}</a>`).join('')}</nav><div class="sidebar-bottom"><a href="/">Website</a><button class="btn" id="sign-out">Sign out</button></div></aside><div class="main-shell"><header class="topbar"><button class="menu-toggle" id="toggle-menu">☰</button><span class="breadcrumb">LocalTrails / <strong id="crumb">Overview</strong></span><div class="topbar-right"><span class="account-name">${e(account.name)}</span><span class="avatar">${e(account.name.slice(0,2).toUpperCase())}</span></div></header><main class="content"><div class="page-heading"><div><span class="eyebrow">OPERATIONS</span><h1 id="heading">Overview</h1><p id="summary">Current information from LocalTrails</p></div><div id="page-action"></div></div><p id="message" class="message" role="status"></p><section id="body"><div class="loading">Loading…</div></section></main></div></div><dialog id="editor" class="lt-dialog"><form id="editor-form" method="dialog"><header><h2 id="editor-title"></h2></header><div id="editor-fields"></div><footer><button class="btn" type="button" id="cancel-dialog">Cancel</button><button class="btn primary" type="submit">Save</button></footer></form></dialog>`;
-    document.getElementById('sign-out').onclick=async()=>{try{await request('/api/auth/logout','POST');location.href='/login.html';}catch(err){flash(err.message,true);}};
+  function shell(){app.innerHTML=`<div class="layout"><aside class="sidebar" id="sidebar"><a class="brand" href="/"><span class="brand-icon">L</span><span><strong>LocalTrails</strong><small>TOURISM PLATFORM</small></span></a><div class="work-label">${provider?'PROVIDER':superAdmin?'SUPER ADMIN':'ADMIN'} WORKSPACE</div><nav class="nav">${sections.map(([key,label])=>`<a href="#${key}" data-nav="${key}"><span class="nav-symbol" aria-hidden="true">${navIcons[key]||'•'}</span>${e(label)}</a>`).join('')}</nav><div class="sidebar-bottom"><a href="/">Website</a><button class="btn" id="sign-out">Sign out</button></div></aside><div class="main-shell"><header class="topbar"><button class="menu-toggle" id="toggle-menu">☰</button><span class="breadcrumb">LocalTrails / <strong id="crumb">Overview</strong></span><div class="topbar-right"><span class="account-name">${e(account.name)}</span><span class="avatar">${e(account.name.slice(0,2).toUpperCase())}</span></div></header><main class="content"><div class="page-heading"><div><span class="eyebrow">OPERATIONS</span><h1 id="heading">Overview</h1><p id="summary">Current information from LocalTrails</p></div><div id="page-action"></div></div><p id="message" class="message" role="status"></p><section id="body"><div class="loading">Loading…</div></section></main></div></div><dialog id="editor" class="lt-dialog"><form id="editor-form" method="dialog"><header><h2 id="editor-title"></h2></header><div id="editor-fields"></div><footer><button class="btn" type="button" id="cancel-dialog">Cancel</button><button class="btn primary" type="submit">Save</button></footer></form></dialog>`;
+    document.getElementById('sign-out').onclick=async()=>{try{await request('/api/auth/logout?role='+encodeURIComponent(role),'POST');location.href=provider?'/login.html':superAdmin?'/superadmin/login.html':'/admin/login.html';}catch(err){flash(err.message,true);}};
     document.getElementById('toggle-menu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('cancel-dialog').onclick=()=>document.getElementById('editor').close();
   }
@@ -42,7 +44,7 @@
     if(section==='overview'){
       const o=await api(provider?'/dashboard':'/overview');
       body.innerHTML=provider?stats([['Packages',o.total_packages],['Active packages',o.active_packages],['Bookings',o.total_bookings],['Booking value',money(o.revenue)]]):stats([['Providers',o.providers],['Pending providers',o.pending_providers],['Packages',o.packages],['Pending packages',o.pending_packages],['Bookings',o.bookings],['Customers',o.customers],['Booking value',money(o.booked_value)]]);
-      body.innerHTML+='<div class="panel padded"><h2>Manage operations</h2><p class="muted">Select a section on the left to view real records and available actions.</p></div>';return;
+      body.innerHTML+='<div class="panel padded"><h2>Manage operations</h2><p class="muted">Use the navigation to review live records, manage approvals, and follow up on outstanding tasks.</p></div>';return;
     }
     if(section==='earnings'){const o=await api('/earnings');body.innerHTML=stats([['Paid bookings',o.paid_bookings],['Total earnings',money(o.total_earnings)]]);return;}
     if(section==='packages'){
@@ -97,5 +99,5 @@
     }catch(err){flash(err.message,true);}
   });
   window.addEventListener('hashchange',load);
-  (async()=>{try{const session=await request('/api/auth/me');account=session.user;if(!account||account.role!==role)throw Error('This dashboard requires a '+role.replace('_',' ')+' account.');shell();load();}catch(err){app.innerHTML=`<main class="access-gate"><h1>Sign in required</h1><p>${e(err.message)}</p><a class="btn primary" href="/login.html">Go to login</a></main>`;}})();
+  (async()=>{try{const session=await request('/api/auth/me?role='+encodeURIComponent(role));account=session.user;if(!account||account.role!==role)throw Error('This dashboard requires a '+role.replace('_',' ')+' account.');shell();load();}catch(err){app.innerHTML=`<main class="access-gate"><h1>Sign in required</h1><p>${e(err.message)}</p><a class="btn primary" href="${provider?'/login.html':superAdmin?'/superadmin/login.html':'/admin/login.html'}">Go to login</a></main>`;}})();
 })();
