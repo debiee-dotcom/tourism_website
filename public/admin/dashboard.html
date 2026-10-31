@@ -1,36 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Dashboard | Local Trails</title>
-  <link rel="stylesheet" href="../css/dashboard.css">
-</head>
-<body>
-  <div id="app-shell" data-role="admin" data-title="Admin Dashboard"></div>
-
-  <template id="page-content">
-    <section aria-label="Quick actions" class="card" style="margin-bottom:24px">
-      <div class="card__header"><h2>Quick Actions</h2></div>
-      <div class="actions">
-        <a class="btn" href="approvals.html">✅ Review Pending Packages</a>
-        <a class="btn btn--outline" href="users.html">👥 Manage Users</a>
-        <a class="btn btn--outline" href="bookings.html">🎫 Monitor Bookings</a>
-      </div>
-    </section>
-
-    <section aria-label="Statistics"><div id="statsGrid"></div></section>
-
-    <section class="card" aria-label="Pending packages">
-      <div class="card__header">
-        <h2>Packages Awaiting Approval</h2>
-        <a href="approvals.html">View all →</a>
-      </div>
-      <div id="pendingList"></div>
-    </section>
-  </template>
-
-  <script src="../js/dashboard-common.js"></script>
-  <script src="../js/admin.js"></script>
-</body>
-</html>
+<!doctype html>
+<html lang="en" data-role="admin" data-login-path="/login.html">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Admin Dashboard | LocalTrails</title><link rel="stylesheet" href="../css/dashboard.css"><script src="../js/dashboard-core.js" defer></script></head>
+<body><div class="app">
+<aside class="sidebar" id="sidebar" aria-label="Admin navigation">
+ <a class="brand" href="dashboard.html"><span class="brand-mark" aria-hidden="true">✦</span>Local<span>Trails</span></a>
+ <span class="nav-title">Workspace</span><nav class="nav" aria-label="Main navigation"><a class="nav-link active" href="dashboard.html" aria-current="page"><span aria-hidden="true">▦</span>Overview</a>
+<a class="nav-link " data-future ><span aria-hidden="true">✓</span>Package approvals</a>
+<a class="nav-link " data-future ><span aria-hidden="true">♙</span>Customers & providers</a>
+<a class="nav-link " data-future ><span aria-hidden="true">⌖</span>Destinations & categories</a>
+<a class="nav-link " data-future ><span aria-hidden="true">▤</span>Booking issues</a>
+<a class="nav-link " data-future ><span aria-hidden="true">▥</span>Reports & activity</a></nav>
+ <div class="nav-bottom"><div class="account"><span id="account-avatar" class="avatar">?</span><span><strong id="account-name" style="font-size:12px">Connecting…</strong><small>Administrator</small></span></div></div>
+</aside><div class="overlay" id="mobile-overlay" aria-hidden="true"></div>
+<main class="main" id="main-content">
+<header class="topbar"><div style="display:flex;align-items:center;gap:13px"><button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">☰</button><div class="breadcrumbs">Workspace&nbsp; / &nbsp;<strong>Overview</strong></div></div><div class="top-actions"><span class="today" id="last-updated">Live dashboard</span><button class="btn btn-light" id="refresh-dashboard" type="button">↻ Refresh</button></div></header>
+<section class="hero" aria-labelledby="hero-title"><div class="hero-copy"><div class="eyebrow">LOCALTRAILS · ADMIN PORTAL</div><h1 id="hero-title">A clear view of your platform.</h1><p>Monitor bookings and providers, and keep every tour experience on track.</p></div><div class="hero-art" aria-hidden="true"><svg viewBox="0 0 150 140" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 116 52 39l26 42 15-21 50 56H7Z" fill="#9BCBA9" opacity=".8"/><path d="m24 116 29-50 11 17 17-29 46 62" stroke="#287451" stroke-width="3" stroke-linecap="round"/><circle cx="112" cy="26" r="17" fill="#F6FAE8"/><path d="M17 120h121" stroke="#287451" stroke-width="4" stroke-linecap="round"/></svg></div></section>
+<div id="page-notice" class="notice" role="alert" hidden></div><a id="login-link" class="btn btn-light" href="/login.html" hidden>Go to sign in</a>
+<section aria-labelledby="overview-title"><div class="section-heading"><div><h2 id="overview-title">Dashboard overview</h2><p>Only verified backend data is displayed below.</p></div><span class="meta-inline">LIVE METRICS</span></div><div class="stat-grid"><article class="stat"><div class="stat-top"><span class="stat-label">Pending approvals</span><span class="stat-icon" aria-hidden="true">◷</span></div><div class="stat-value" data-stat="pending_packages" aria-live="polite">—</div><div class="stat-note">Live data from your account</div></article>
+<article class="stat"><div class="stat-top"><span class="stat-label">Providers</span><span class="stat-icon" aria-hidden="true">♙</span></div><div class="stat-value" data-stat="total_providers" aria-live="polite">—</div><div class="stat-note">Live data from your account</div></article>
+<article class="stat"><div class="stat-top"><span class="stat-label">Platform bookings</span><span class="stat-icon" aria-hidden="true">▤</span></div><div class="stat-value" data-stat="total_bookings" aria-live="polite">—</div><div class="stat-note">Live data from your account</div></article>
+<article class="stat"><div class="stat-top"><span class="stat-label">Total revenue</span><span class="stat-icon" aria-hidden="true">₹</span></div><div class="stat-value" data-stat="total_revenue" aria-live="polite">—</div><div class="stat-note">Live data from your account</div></article></div></section>
+<section aria-label="Recent activity and actions"><div class="section-heading"><div><h2>Manage your workspace</h2><p>Recent transactions and your most-used actions.</p></div></div><div class="content-grid"><div class="panel"><div class="panel-header"><div><h3>Recent bookings</h3><p>Recent platform reservations</p></div></div><div class="table-wrap"><table class="data-table"><thead><tr><th scope="col">Booking ID</th><th scope="col">Customer</th><th scope="col">Package</th><th scope="col">Travel date</th><th scope="col">Amount</th><th scope="col">Status</th></tr></thead><tbody id="recent-bookings"><tr><td colspan="6" class="empty">Connecting to backend…</td></tr></tbody></table></div></div><div class="panel"><div class="panel-header"><div><h3>Quick actions</h3><p>Management workflows arrive in later milestones</p></div></div><div class="quick-actions"><button class="action" type="button" disabled title="Available in a later milestone"><span class="action-icon" aria-hidden="true">＋</span><span><strong>Review package requests</strong><small>Approve or reject submitted tours</small></span><span class="action-chevron" aria-hidden="true">›</span></button>
+<button class="action" type="button" disabled title="Available in a later milestone"><span class="action-icon" aria-hidden="true">◫</span><span><strong>Manage accounts</strong><small>Review customers and providers</small></span><span class="action-chevron" aria-hidden="true">›</span></button>
+<button class="action" type="button" disabled title="Available in a later milestone"><span class="action-icon" aria-hidden="true">▤</span><span><strong>Booking oversight</strong><small>Resolve booking issues</small></span><span class="action-chevron" aria-hidden="true">›</span></button></div></div></div></section>
+<p class="footnote">Dashboard figures and booking data are requested from your team's server. Missing endpoints show an error, never sample values.</p>
+</main></div></body></html>
