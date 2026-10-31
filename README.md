@@ -1,6 +1,6 @@
 Local Trails – Local Tourism Booking System
 
-About the Project
+About 
 
 Local Trails is a web-based local tourism booking platform that connects travelers with local tourism providers.
 
@@ -72,7 +72,4 @@ Project Objective
 
 To develop an interactive tourism booking platform that promotes local culture, collaborative travel planning, and responsible tourism while providing a seamless booking experience.
 
-Project Status
-
-Under Development
 
