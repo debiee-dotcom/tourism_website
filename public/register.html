@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Local Trails</title>
+    <meta name="description" content="Create your Local Trails account and start discovering authentic travel experiences with Travel Tribe, Local Legends, and EcoTrail modes.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="auth-page">
+
+        <!-- ── Left Panel: Visual ─────────────────────────────── -->
+        <div class="auth-visual">
+            <div class="auth-visual-content">
+
+                <a href="index.html" class="logo">Local<span>Trails.</span></a>
+
+                <h2>Start Your<br>Adventure Today.</h2>
+                <p>
+                    Join thousands of travelers exploring authentic local experiences,
+                    building travel tribes, and leaving positive footprints across India.
+                </p>
+
+                <div class="auth-feature-list">
+                    <div class="auth-feature">
+                        <span class="auth-feature-icon">🤝</span>
+                        <span>Create and join Travel Tribes</span>
+                    </div>
+                    <div class="auth-feature">
+                        <span class="auth-feature-icon">🏺</span>
+                        <span>Earn cultural achievement badges</span>
+                    </div>
+                    <div class="auth-feature">
+                        <span class="auth-feature-icon">🌿</span>
+                        <span>Track your eco-points &amp; impact</span>
+                    </div>
+                    <div class="auth-feature">
+                        <span class="auth-feature-icon">📍</span>
+                        <span>Book with verified local guides</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── Right Panel: Form ─────────────────────────────── -->
+        <div class="auth-form-panel">
+
+            <div class="auth-form-header">
+                <h1>Create Account</h1>
+                <p>Already have an account? <a href="login.html" id="go-to-login">Sign in here</a></p>
+            </div>
+
+            <div class="form-alert error-alert" id="formAlert" role="alert"></div>
+
+            <form id="registerForm" novalidate>
+
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="regName">Full Name <span class="required">*</span></label>
+                    <div class="input-wrap">
+                        <input type="text" id="regName" name="name"
+                               placeholder="e.g. Neha Mary Robin"
+                               autocomplete="name" maxlength="80">
+                    </div>
+                    <span class="form-error" id="regName-err"></span>
+                </div>
+
+                <!-- Email + Mobile -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regEmail">Email <span class="required">*</span></label>
+                        <div class="input-wrap">
+                            <input type="email" id="regEmail" name="email"
+                                   placeholder="you@example.com"
+                                   autocomplete="email">
+                        </div>
+                        <span class="form-error" id="regEmail-err"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regMobile">Mobile Number <span class="required">*</span></label>
+                        <div class="input-wrap">
+                            <input type="tel" id="regMobile" name="mobile"
+                                   placeholder="10-digit mobile"
+                                   maxlength="10"
+                                   autocomplete="tel">
+                        </div>
+                        <span class="form-error" id="regMobile-err"></span>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="regPassword">Password <span class="required">*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="regPassword" name="password"
+                               placeholder="Minimum 8 characters"
+                               autocomplete="new-password">
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
+                    </div>
+                    <span class="form-error" id="regPassword-err"></span>
+                    <!-- Strength meter -->
+                    <div class="password-strength" id="strengthWrap" style="display:none;">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="strength-label" id="strengthLabel"></span>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="regConfirm">Confirm Password <span class="required">*</span></label>
+                    <div class="input-wrap">
+                        <input type="password" id="regConfirm" name="confirm_password"
+                               placeholder="Repeat your password"
+                               autocomplete="new-password">
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
+                    </div>
+                    <span class="form-error" id="regConfirm-err"></span>
+                </div>
+
+                <!-- Role Selector -->
+                <div class="form-group">
+                    <label>Account Type <span class="required">*</span></label>
+                    <div class="role-selector" role="radiogroup" aria-label="Select account type">
+
+                        <div class="role-option">
+                            <input type="radio" id="roleCustomer" name="role" value="customer" checked>
+                            <label class="role-label" for="roleCustomer">
+                                <span class="role-label-icon">🧳</span>
+                                <span class="role-label-text">Customer</span>
+                                <span class="role-label-sub">Explore &amp; book packages</span>
+                            </label>
+                        </div>
+
+                        <div class="role-option">
+                            <input type="radio" id="roleProvider" name="role" value="provider">
+                            <label class="role-label" for="roleProvider">
+                                <span class="role-label-icon">🧑‍🏫</span>
+                                <span class="role-label-text">Local Provider</span>
+                                <span class="role-label-sub">List &amp; manage tours</span>
+                            </label>
+                        </div>
+
+                    </div>
+                    <span class="form-error" id="regRole-err"></span>
+                </div>
+
+                <button type="submit" class="form-submit-btn" id="registerBtn">
+                    Create My Account →
+                </button>
+
+                <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:16px;">
+                    By registering you agree to our
+                    <a href="#" style="color:var(--green);">Terms of Service</a> and
+                    <a href="#" style="color:var(--green);">Privacy Policy</a>.
+                </p>
+
+            </form>
+
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Show strength meter when user starts typing password
+        document.getElementById("regPassword").addEventListener("input", function() {
+            document.getElementById("strengthWrap").style.display = this.value ? "block" : "none";
+        });
+    </script>
+</body>
+</html>

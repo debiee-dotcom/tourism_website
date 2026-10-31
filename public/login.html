@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Local Trails</title>
+    <meta name="description" content="Sign in to Local Trails to manage your bookings, travel tribes, and eco-points.">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="auth-page">
+
+        <!-- ── Left Panel: Visual ─────────────────────────────── -->
+        <div class="auth-visual">
+            <div class="auth-visual-content">
+
+                <a href="index.html" class="logo">Local<span>Trails.</span></a>
+
+                <h2>Welcome Back,<br>Explorer.</h2>
+                <p>
+                    Sign back in to manage your bookings, check your tribe plans,
+                    and see the eco-points you've earned on the road.
+                </p>
+
+                <div class="auth-feature-list">
+                    <div class="auth-feature">
+                        <span class="auth-feature-icon">📋</span>
+                        <span>View and manage your bookings</span>
+                    </div>
+                    <div class="auth-feature">
+                        <span class="auth-feature-icon">🤝</span>
+                        <span>Check your tribe's travel plans</span>
+                    </div>
+                    <div class="auth-feature">
+                        <span class="auth-feature-icon">🌿</span>
+                        <span>Track your eco-points &amp; badges</span>
+                    </div>
+                    <div class="auth-feature">
+                        <span class="auth-feature-icon">🗺️</span>
+                        <span>Browse your Tribe Impact Passport</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── Right Panel: Form ─────────────────────────────── -->
+        <div class="auth-form-panel">
+
+            <div class="auth-form-header">
+                <h1>Sign In</h1>
+                <p>Don't have an account? <a href="register.html" id="go-to-register">Create one here</a></p>
+            </div>
+
+            <div class="form-alert" id="loginAlert" role="alert"></div>
+
+            <form id="loginForm" novalidate>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="loginEmail">Email Address <span class="required">*</span></label>
+                    <div class="input-wrap">
+                        <input type="email" id="loginEmail" name="email"
+                               placeholder="you@example.com"
+                               autocomplete="email">
+                    </div>
+                    <span class="form-error" id="loginEmail-err"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="loginPassword">
+                        Password <span class="required">*</span>
+                        <a href="#" id="forgot-password"
+                           style="float:right;font-size:12px;color:var(--green);font-weight:500;">
+                            Forgot password?
+                        </a>
+                    </label>
+                    <div class="input-wrap">
+                        <input type="password" id="loginPassword" name="password"
+                               placeholder="Your password"
+                               autocomplete="current-password">
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">👁️</button>
+                    </div>
+                    <span class="form-error" id="loginPassword-err"></span>
+                </div>
+
+                <button type="submit" class="form-submit-btn" id="loginBtn">
+                    Sign In →
+                </button>
+
+            </form>
+
+            <div class="form-divider" style="margin-top:28px;">or</div>
+
+            <p style="text-align:center;margin-top:20px;font-size:14px;color:var(--muted);">
+                New to Local Trails?
+                <a href="register.html" style="color:var(--green);font-weight:600;">Create a free account →</a>
+            </p>
+
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
