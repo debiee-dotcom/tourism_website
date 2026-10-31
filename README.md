@@ -1,7 +1,5 @@
 Local Trails – Local Tourism Booking System
 
-**Travel Together. Discover Stories. Leave a Better Footprint.**
-
 About the Project
 
 Local Trails is a web-based local tourism booking platform that connects travelers with local tourism providers.
