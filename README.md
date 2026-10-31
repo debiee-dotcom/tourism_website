@@ -1,37 +1,80 @@
-# LocalTrails – Admin & Provider dashboards
+Local Trails – Local Tourism Booking System
 
-Framework-free HTML/CSS/JavaScript dashboards with a single API adapter and preview/demo mode.
+**Travel Together. Discover Stories. Leave a Better Footprint.**
 
-## Start
+About the Project
 
-```bash
-cd localtrails_dashboard
-node dev-server.js
-```
+Local Trails is a web-based local tourism booking platform that connects travelers with local tourism providers.
 
-Visit http://localhost:3000 (choose Admin or Provider). Requires Node.js; no `npm install`.
+The platform allows users to explore destinations, discover local experiences, book tourism packages, and manage their trips.
 
-## Pages
+It also introduces three unique travel experiences that users can choose based on their preferences.
 
-**Provider:** Overview, My Packages, Bookings, Availability, Reviews, Profile.
+Key Features
 
-**Admin:** Overview, Providers, All Packages, All Bookings, Customers, Reports, Settings.
+Core Features
+- User registration and login
+- Role-based access control
+- Browse and search tourism packages
+- Filter packages by destination, price, date, and category
+- Package booking and cancellation
+- Booking history and payment management
+- Ratings and reviews
+- Responsive user interface
 
-## Backend integration
+Choose Your Travel Experience
 
-Change `PUBLIC_API_BASE` in `public/js/config.js` and set `DEMO_MODE: false`. The API client in `public/js/api.js` sends requests using fetch and bearer authorization. Adjust endpoints/data shapes once your backend contract is finalized; see `docs/API_CONTRACT.md`.
+**1. Travel Tribe – Travel Together**
+- Create travel groups and invite friends
+- Vote on destinations and packages
+- Plan trips collaboratively
+- Manage group budgets and bookings
 
-*Demo mode* stores edits in browser localStorage. It is meant for UI preview only: no real authentication, payments, file upload, or database persistence.
+**2. Local Legends – Explore Local Culture**
+- Discover hidden gems and cultural experiences
+- Explore local stories, traditions, and heritage
+- Book experiences with local guides and artisans
+- Earn cultural achievement badges
 
-## Add to existing Git branch
+**3. EcoTrail – Travel Responsibly**
+- Discover sustainable tourism packages
+- View estimated environmental impact
+- Compare eco-friendly travel options
+- Earn eco-points and sustainability badges
 
-Copy the bundle files into your repository (review before replacing existing files), then:
+Users can select one, two, or all three experiences.
 
-```bash
-git status
-git add public/admin public/provider public/css/dashboard.css public/js/dashboard.js public/js/api.js public/js/config.js public/js/demo-data.js dev-server.js
-git commit -m "Add complete Admin and Provider dashboard UI"
-git push origin feature/provider-admin
-```
+Tribe Impact Passport
+A digital travel passport that tracks:
+- Completed travel experiences
+- Cultural achievements
+- Eco-points and sustainability progress
+- Group travel milestones
 
-If a rebase is in progress, **finish or abort it before copying or committing files**.
+User Roles
+
+| Role | Responsibilities |
+|------|------------------|
+| Customer | Explore packages, book trips, and manage travel experiences |
+| Local Provider | Create packages and manage bookings |
+| Admin | Manage users, packages, destinations, and reports |
+| Super Admin | Manage administrators, permissions, and system settings |
+
+Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Node.js (built-in modules) |
+| Database | MySQL |
+| API Communication | REST API, AJAX/Fetch |
+| Version Control | Git & GitHub |
+
+Project Objective
+
+To develop an interactive tourism booking platform that promotes local culture, collaborative travel planning, and responsible tourism while providing a seamless booking experience.
+
+Project Status
+
+Under Development
+
