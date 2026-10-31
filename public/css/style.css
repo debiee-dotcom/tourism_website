@@ -627,6 +627,9 @@ input, select, textarea { font-family: var(--font); }
     gap: 10px;
     align-items: end;
 }
+.mode-tag.tribe   { background: rgba(79,70,229,0.85); color: #fff; }
+.mode-tag.legends { background: rgba(184,86,10,0.85); color: #fff; }
+.mode-tag.eco     { background: rgba(22,163,74,0.85);  color: #fff; }
 
 .btn-reset {
     padding: 10px 16px;
@@ -1648,6 +1651,24 @@ footer {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
+
+    .package-grid { grid-template-columns: 1fr; }
+    .destination-grid { grid-template-columns: 1fr 1fr; }
+
+    .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+
+    .auth-page { grid-template-columns: 1fr; }
+    .auth-visual { display: none; }
+    .auth-form-panel { padding: 40px 24px; }
+    .form-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .destination-grid { grid-template-columns: 1fr; }
+    .filter-bar { grid-template-columns: 1fr; }
+    .hero-stats { flex-direction: column; gap: 20px; align-items: center; }
+    .hero-ctas { flex-direction: column; align-items: center; }
+    .role-selector { grid-template-columns: 1fr; }
 }
 
 #close-package-modal {
