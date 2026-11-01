@@ -12,11 +12,11 @@ module.exports = function createProviderRoutes({ db, sessions, getRequestBody })
         const cookie = (req.headers.cookie || "")
             .split(";")
             .map(part => part.trim())
-            .find(part => part.startsWith("sessionId="));
+            .find(part => part.startsWith("providerSessionId="));
 
         if (!cookie) return null;
 
-        const id = cookie.slice("sessionId=".length);
+        const id = cookie.slice("providerSessionId=".length);
         const session = sessions.get(id);
 
         if (!session || session.expiresAt < Date.now()) {
