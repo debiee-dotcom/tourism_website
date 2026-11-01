@@ -78,3 +78,8 @@ Project Status
 
 Under Development
 
+
+
+## Local development and Git integration
+
+See `GIT_PR_STEPS.md` for setup, testing, and the PR workflow. Run `./start-local.command` from Terminal on macOS after creating `.env`. Do not commit credentials.

@@ -306,8 +306,8 @@ try {
     showFormAlert(formAlert, "Login successful! Redirecting…", "success");
 
     setTimeout(() => {
-        window.location.href = "index.html";
-    }, 1500);
+        window.location.href = ({provider:"/provider/dashboard.html",admin:"/admin/dashboard.html",super_admin:"/superadmin/dashboard.html"})[data.user?.role] || "/index.html";
+    }, 500);
 
 } catch (error) {
     console.error("Login error:", error);
