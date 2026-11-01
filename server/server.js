@@ -350,7 +350,8 @@ if (req.method === "POST" && req.url === "/api/bookings") {
                 pa.total_capacity,
                 pa.booked_seats,
                 pa.status,
-                p.price
+                p.price,
+                p.status AS package_status
             FROM package_availability pa
             JOIN packages p
                 ON pa.package_id = p.package_id
@@ -371,6 +372,17 @@ if (req.method === "POST" && req.url === "/api/bookings") {
         }
 
         const availability = availabilityRows[0];
+        // Check whether the package is approved and active
+        if (availability.package_status !== "active") {
+            await connection.rollback();
+
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+                success: false,
+                message: "This package is not approved for booking"
+            }));
+            return;
+        }
 
         // 4. Check date and availability
         const remainingSeats =
@@ -1565,7 +1577,71 @@ if (req.method === "POST" && req.url === "/api/auth/logout") {
     return;
 }
 
+// GET: Active destinations
+if (req.method === "GET" && req.url === "/api/destinations") {
+    try {
+        const [destinations] = await db.query(
+            `SELECT destination_id, name
+             FROM destinations
+             WHERE status = 'active'
+             ORDER BY name`
+        );
 
+        res.writeHead(200, {
+            "Content-Type": "application/json"
+        });
+
+        res.end(JSON.stringify({
+            success: true,
+            data: destinations
+        }));
+    } catch (error) {
+        console.error("Destinations error:", error);
+
+        res.writeHead(500, {
+            "Content-Type": "application/json"
+        });
+
+        res.end(JSON.stringify({
+            success: false,
+            message: "Unable to load destinations"
+        }));
+    }
+    return;
+}
+
+// GET: Active categories
+if (req.method === "GET" && req.url === "/api/categories") {
+    try {
+        const [categories] = await db.query(
+            `SELECT category_id, name
+             FROM categories
+             WHERE status = 'active'
+             ORDER BY name`
+        );
+
+        res.writeHead(200, {
+            "Content-Type": "application/json"
+        });
+
+        res.end(JSON.stringify({
+            success: true,
+            data: categories
+        }));
+    } catch (error) {
+        console.error("Categories error:", error);
+
+        res.writeHead(500, {
+            "Content-Type": "application/json"
+        });
+
+        res.end(JSON.stringify({
+            success: false,
+            message: "Unable to load categories"
+        }));
+    }
+    return;
+}
     // Serve frontend files from public folder
 if (req.method === "GET"&&
     !req.url.startsWith("/api/")) {
