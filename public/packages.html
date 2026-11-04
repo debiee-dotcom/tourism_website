@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Packages | Local Trails</title>
+    <meta name="description" content="Browse and filter all Local Trails tourism packages by destination, category, price, duration, and date. Find your perfect local experience.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/packages.css">
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════
+         NAVBAR
+    ═══════════════════════════════════════════════════════ -->
+    <header class="navbar" id="navbar">
+        <a href="index.html" class="logo-wrap" style="text-decoration:none;">
+            <span class="logo">Local<span>Trails.</span></span>
+            <span class="logo-tagline">Travel Together. Discover Stories. Leave a Better Footprint.</span>
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+            <a href="packages.html" id="nav-packages" class="nav-active">Packages</a>
+            <a href="index.html#destinations" id="nav-destinations">Destinations</a>
+            <a href="index.html#experiences" id="nav-experiences">Experiences</a>
+            <a href="my-bookings.html" id="nav-bookings" style="display:none;">My Bookings</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html"    class="login-btn"    id="nav-login">Login</a>
+            <a href="register.html" class="register-btn" id="nav-register">Register</a>
+            <span id="nav-user" style="display:none;"></span>
+            <a href="#" class="login-btn" id="nav-logout" style="display:none;">Logout</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ── Page Header ─────────────────────────────────── -->
+        <section class="packages-page-hero">
+            <div class="packages-page-hero-content">
+                <span class="section-label">HANDPICKED EXPERIENCES</span>
+                <h1>Browse All Packages</h1>
+                <p>Filter by destination, category, price, duration, or date to find the perfect local experience.</p>
+            </div>
+
+            <!-- ── Active Filter Pills ─────────────────────── -->
+            <div id="active-filters" class="active-filters" aria-live="polite"></div>
+        </section>
+
+        <!-- ── Filter + Results Layout ──────────────────────── -->
+        <div class="packages-layout">
+
+            <!-- ── Sidebar Filter Panel ──────────────────────── -->
+            <aside class="filter-sidebar" id="filterSidebar" aria-label="Filter packages">
+
+                <div class="filter-sidebar-header">
+                    <h2>Filters</h2>
+                    <button class="btn-reset" id="resetFilters" type="button">Clear all</button>
+                </div>
+
+                <!-- Search -->
+                <div class="filter-section">
+                    <label class="filter-section-label" for="searchInput">🔍 Keyword Search</label>
+                    <input type="text" id="searchInput"
+                           class="filter-input"
+                           placeholder="Package name or destination…"
+                           autocomplete="off">
+                </div>
+
+                <!-- Destination -->
+                <div class="filter-section">
+                    <label class="filter-section-label" for="filterDestination">📍 Destination</label>
+                    <select id="filterDestination" class="filter-select">
+                        <option value="">All Destinations</option>
+                        <!-- Populated dynamically from /api/catalog/options -->
+                    </select>
+                </div>
+
+                <!-- Category -->
+                <div class="filter-section">
+                    <label class="filter-section-label" for="filterCategory">🏷️ Category</label>
+                    <select id="filterCategory" class="filter-select">
+                        <option value="">All Categories</option>
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Duration -->
+                <div class="filter-section">
+                    <label class="filter-section-label" for="filterDuration">⏱️ Duration</label>
+                    <select id="filterDuration" class="filter-select">
+                        <option value="">Any Duration</option>
+                        <option value="1">1 Day</option>
+                        <option value="2-3">2–3 Days</option>
+                        <option value="4-7">4–7 Days</option>
+                        <option value="7+">7+ Days</option>
+                    </select>
+                </div>
+
+                <!-- Price Range -->
+                <div class="filter-section">
+                    <label class="filter-section-label">
+                        💰 Max Price:
+                        <span id="priceDisplay" class="price-display-value">Any</span>
+                    </label>
+                    <input type="range" id="filterPrice"
+                           class="filter-range"
+                           min="500" max="20000" step="500" value="20000"
+                           aria-label="Maximum price filter">
+                    <div class="range-labels">
+                        <span>₹500</span>
+                        <span>₹20,000+</span>
+                    </div>
+                </div>
+
+                <!-- Available From Date -->
+                <div class="filter-section">
+                    <label class="filter-section-label" for="filterDate">📅 Available From</label>
+                    <input type="date" id="filterDate" class="filter-input">
+                </div>
+
+                <!-- Experience focus -->
+                <div class="filter-section">
+                    <label class="filter-section-label">🧭 Experience focus</label>
+                    <div class="mode-checkboxes">
+                        <label class="mode-check-label tribe-check">
+                            <input type="checkbox" id="modeTribe" value="tribe">
+                            <span>🤝 Group travel</span>
+                        </label>
+                        <label class="mode-check-label legends-check">
+                            <input type="checkbox" id="modeLegends" value="legends">
+                            <span>🏺 Local culture</span>
+                        </label>
+                        <label class="mode-check-label eco-check">
+                            <input type="checkbox" id="modeEco" value="eco">
+                            <span>🌿 Responsible travel</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sort -->
+                <div class="filter-section">
+                    <label class="filter-section-label" for="sortPackages">⬆️ Sort By</label>
+                    <select id="sortPackages" class="filter-select">
+                        <option value="default">Default</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="rating-desc">Highest Rated</option>
+                        <option value="duration-asc">Shortest First</option>
+                    </select>
+                </div>
+
+                <!-- Mobile close button -->
+                <button class="filter-mobile-close" id="filterMobileClose" type="button">
+                    ✕ Close Filters
+                </button>
+
+            </aside>
+            <!-- /Sidebar -->
+
+            <!-- ── Results Panel ──────────────────────────────── -->
+            <section class="packages-results" aria-label="Package results">
+
+                <!-- Results toolbar -->
+                <div class="results-toolbar">
+                    <p class="results-count" id="resultsCount">Loading packages…</p>
+                    <button class="btn-outline btn-pill filter-toggle-btn" id="filterToggleBtn" type="button">
+                        ⚙️ Filters
+                    </button>
+                </div>
+
+                <!-- Loading skeleton -->
+                <div id="loading-state" class="loading-grid">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+
+                <!-- Package grid — JS injects cards here -->
+                <div id="package-grid" class="package-grid" role="list" aria-live="polite"></div>
+
+                <!-- Empty state -->
+                <div id="empty-state" class="empty-state" style="display:none;">
+                    <span class="empty-state-icon">🔍</span>
+                    <h3>No packages found</h3>
+                    <p>Try adjusting your filters or <button class="link-btn" id="emptyReset">clear all filters</button> to see all packages.</p>
+                </div>
+
+                <!-- Error state -->
+                <div id="error-state" class="error-state" style="display:none;">
+                    <span class="empty-state-icon">⚠️</span>
+                    <h3>Something went wrong</h3>
+                    <p id="error-message">Unable to load packages. Please check your connection and try again.</p>
+                    <button class="btn btn-primary" id="retryBtn" type="button">Retry</button>
+                </div>
+
+            </section>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════
+             PACKAGE DETAILS MODAL
+        ═══════════════════════════════════════════════════ -->
+        <div id="package-modal" class="package-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display:none;">
+            <div class="package-modal-content">
+
+                <button id="close-package-modal" class="modal-close-btn" type="button" aria-label="Close modal">✕</button>
+
+                <!-- Package info populated by JS -->
+                <div id="package-details">
+                    <div class="modal-loading">Loading package details…</div>
+                </div>
+
+                <!-- Booking form -->
+                <div id="booking-form-section" style="display:none;">
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">📅 Select Travel Date</h3>
+                        <select id="availability-date" class="filter-select">
+                            <option value="">Choose an available date…</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-section">
+                        <label class="modal-section-title" for="number-of-people">👥 Number of People</label>
+                        <input type="number" id="number-of-people"
+                               class="filter-input"
+                               min="1" max="20" value="1">
+                    </div>
+
+                    <button id="continue-booking" class="btn btn-primary modal-book-btn" type="button">
+                        Continue to Payment →
+                    </button>
+                </div>
+
+                <!-- Payment section -->
+                <div id="payment-section" style="display:none;">
+                    <div class="payment-card">
+                        <h3>💳 Complete Your Payment</h3>
+                        <p id="payment-amount" class="payment-amount"></p>
+
+                        <div class="modal-section">
+                            <label class="modal-section-title" for="payment-method">Payment Method</label>
+                            <select id="payment-method" class="filter-select">
+                                <option value="UPI">UPI</option>
+                                <option value="CARD">Credit / Debit Card</option>
+                                <option value="NET_BANKING">Net Banking</option>
+                            </select>
+                        </div>
+
+                        <button id="pay-now" class="btn btn-primary modal-book-btn" type="button">
+                            Pay Now ✓
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- /Modal -->
+
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════════════════ -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">Local<span>Trails.</span></a>
+                <p>Connecting travelers with authentic local experiences.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <a href="packages.html">All Packages</a>
+                <a href="index.html#destinations">Destinations</a>
+                <a href="index.html#experiences">Experiences</a>
+            </div>
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="login.html">Login</a>
+                <a href="register.html">Register</a>
+                <a href="my-bookings.html">My Bookings</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Local Trails. All rights reserved.</p>
+            <p>Made with 💚 for local explorers</p>
+        </div>
+    </footer>
+
+    <script src="js/packages.js"></script>
+</body>
+</html>

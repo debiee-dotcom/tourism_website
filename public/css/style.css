@@ -792,6 +792,91 @@ input, select, textarea { font-family: var(--font); }
     padding: 90px 8%;
 }
 
+.combined-experience-section {
+    background: linear-gradient(135deg, #f1f8f2 0%, #fff 62%, #f7f5eb 100%);
+}
+
+.combined-experience-label {
+    background: var(--green-light);
+    color: var(--green);
+}
+
+.combined-experience-icon {
+    background: var(--green-light);
+}
+
+.travel-passport {
+    position: relative;
+    padding: 28px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--green);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.travel-passport-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.passport-kicker {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.travel-passport-header h3 {
+    margin-top: 6px;
+    color: var(--text);
+    font-size: 22px;
+}
+
+.passport-mark {
+    display: grid;
+    width: 42px;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid var(--green);
+    border-radius: 50%;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.passport-progress-list {
+    display: grid;
+    gap: 0;
+    margin: 8px 0 18px;
+}
+
+.passport-progress-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.passport-progress-row strong {
+    color: var(--green);
+    font-size: 12px;
+}
+
+.passport-link {
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 700;
+}
+
 /* Tribe */
 .tribe-section {
     background: linear-gradient(135deg, var(--tribe-light) 0%, #f5f3ff 100%);

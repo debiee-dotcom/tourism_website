@@ -61,7 +61,7 @@ function renderPackages(items) {
         if (tour.mode && tour.mode.length > 0) {
             const modeTags = document.createElement("div");
             modeTags.className = "package-mode-tags";
-            const modeLabels = { tribe: "🤝 Tribe", legends: "🏺 Legends", eco: "🌿 Eco" };
+            const modeLabels = { tribe: "🤝 Group travel", legends: "🏺 Local culture", eco: "🌿 Responsible travel" };
             tour.mode.forEach(m => {
                 const t = document.createElement("span");
                 t.className = `mode-tag ${m}`;
