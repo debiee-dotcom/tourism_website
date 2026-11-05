@@ -198,37 +198,43 @@ module.exports = function createProviderRoutes({ db, sessions, getRequestBody })
                 }
 
                 const [result] = await db.query(
-                    `INSERT INTO packages
-                    (
-                        provider_id,
-                        title,
-                        destination_id,
-                        category_id,
-                        duration,
-                        price,
-                        available_from,
-                        badge,
-                        image_url,
-                        description,
-                        capacity,
-                        status
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                    [
-                        providerId,
-                        body.title,
-                        body.destination_id,
-                        body.category_id,
-                        body.duration,
-                        body.price,
-                        body.available_from || null,
-                        body.badge || null,
-                        body.image_url || null,
-                        body.description || null,
-                        body.capacity,
-                        "pending"
-                    ]
-                );
+    `INSERT INTO packages
+    (
+        provider_id,
+        title,
+        destination_id,
+        category_id,
+        duration,
+        price,
+        available_from,
+        badge,
+        image_url,
+        description,
+        itinerary,
+        inclusions,
+        exclusions,
+        capacity,
+        status
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+        providerId,
+        body.title,
+        body.destination_id,
+        body.category_id,
+        body.duration,
+        body.price,
+        body.available_from || null,
+        body.badge || null,
+        body.image_url || null,
+        body.description || null,
+        body.itinerary ? JSON.stringify(body.itinerary) : null,
+        body.inclusions || null,
+        body.exclusions || null,
+        body.capacity,
+        "pending"
+    ]
+);
 
                 return send(res, 201, {
                     success: true,
@@ -271,6 +277,9 @@ module.exports = function createProviderRoutes({ db, sessions, getRequestBody })
                         "badge",
                         "image_url",
                         "description",
+                        "itinerary",
+"inclusions",
+"exclusions",
                         "capacity"
                     ];
 
@@ -285,7 +294,11 @@ module.exports = function createProviderRoutes({ db, sessions, getRequestBody })
                         });
                     }
 
-                    const values = fields.map(key => body[key]);
+                    const values = fields.map(key =>
+                        key === "itinerary" && body[key] !== null
+                            ? JSON.stringify(body[key])
+                            : body[key]
+                    );
 
                     const sql = fields
                         .map(key => `\`${key}\` = ?`)
@@ -643,24 +656,43 @@ module.exports = function createProviderRoutes({ db, sessions, getRequestBody })
 
             if (req.method === "GET" && path === "/api/provider/earnings") {
 
-                const [rows] = await db.query(
-                    `SELECT
-                        COUNT(*) AS paid_bookings,
-                        COALESCE(SUM(pay.amount), 0) AS total_earnings
-                     FROM payments pay
-                     JOIN bookings b ON b.booking_id = pay.booking_id
-                     JOIN packages p ON p.package_id = b.package_id
-                     WHERE
-                        p.provider_id = ?
-                        AND pay.payment_status = 'success'`,
-                    [providerId]
-                );
+    const [rows] = await db.query(
+        `SELECT
+            p.package_id,
+            p.title,
+            COUNT(pay.payment_id) AS paid_bookings,
+            COALESCE(SUM(pay.amount), 0) AS total_earnings
+         FROM packages p
+         LEFT JOIN bookings b
+            ON b.package_id = p.package_id
+         LEFT JOIN payments pay
+            ON pay.booking_id = b.booking_id
+            AND pay.payment_status = 'success'
+         WHERE p.provider_id = ?
+         GROUP BY p.package_id, p.title
+         ORDER BY total_earnings DESC`,
+        [providerId]
+    );
 
-                return send(res, 200, {
-                    success: true,
-                    data: rows[0]
-                });
-            }
+    const paidBookings = rows.reduce(
+        (sum, row) => sum + Number(row.paid_bookings),
+        0
+    );
+
+    const totalEarnings = rows.reduce(
+        (sum, row) => sum + Number(row.total_earnings),
+        0
+    );
+
+    return send(res, 200, {
+        success: true,
+        data: {
+            paid_bookings: paidBookings,
+            total_earnings: totalEarnings,
+            packages: rows
+        }
+    });
+}
 
             return send(res, 404, {
                 success: false,

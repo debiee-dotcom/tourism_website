@@ -204,8 +204,9 @@ function initRegisterForm() {
         registerBtn.textContent = "Creating account...";
 
         try {
-            const response = await fetch("/api/auth/register", {
+            const response = await fetch("http://localhost:3000/api/auth/register", {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -285,8 +286,9 @@ function initLoginForm() {
 hideFormAlert(formAlert);
 
 try {
-    const response = await fetch("/api/auth/login", {
-        method: "POST",
+    const response = await fetch("http://localhost:3000/api/auth/login", {
+    method: "POST",
+    credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -297,6 +299,8 @@ try {
     });
 
     const data = await response.json();
+    console.log("LOGIN RESPONSE:", data);
+console.log("LOGGED-IN ROLE:", data.user?.role);
 
     if (!response.ok) {
         showFormAlert(formAlert, data.message || "Login failed.", "error");
@@ -306,7 +310,12 @@ try {
     showFormAlert(formAlert, "Login successful! Redirecting…", "success");
 
     setTimeout(() => {
-        window.location.href = ({provider:"/provider/dashboard.html",admin:"/admin/dashboard.html",super_admin:"/superadmin/dashboard.html"})[data.user?.role] || "/index.html";
+        window.location.href = ({
+    customer: "/index.html",
+    provider: "/provider/dashboard.html",
+    admin: "/admin/dashboard.html",
+    super_admin: "/superadmin/dashboard.html"
+})[data.user?.role] || "/index.html";
     }, 500);
 
 } catch (error) {
