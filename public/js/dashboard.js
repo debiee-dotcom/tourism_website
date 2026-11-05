@@ -500,14 +500,7 @@ if (section === 'earnings') {
         </div>
     `;
 
-    body.innerHTML = `
-    <div style="display:flex; justify-content:flex-end; margin-bottom:18px;">
-        <button class="btn primary" data-task="admin-create">
-            + Create Administrator
-        </button>
-    </div>
-` + table(
-        
+    body.innerHTML += table(
         ['Package', 'Paid bookings', 'Total earnings'],
         (earnings.packages || []).map(p => `
             <tr>
@@ -520,7 +513,6 @@ if (section === 'earnings') {
 
     return;
 }
-
     // PACKAGES
     if (section === 'packages') {
       rows = await api('/packages');

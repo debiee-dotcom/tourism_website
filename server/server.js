@@ -95,7 +95,9 @@ const server = http.createServer(async (req, res) => {
     // Public catalog metadata used by provider package editor.
     if (req.method === "GET" && req.url === "/api/catalog/options") {
         try {
-            const [destinations] = await db.query("SELECT destination_id AS id, name FROM destinations ORDER BY name");
+            const [destinations] = await db.query(
+    "SELECT destination_id AS id, name FROM destinations WHERE status = 'active' ORDER BY name"
+);
             const [categories] = await db.query("SELECT category_id AS id, name FROM categories ORDER BY name");
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ success: true, data: { destinations, categories } }));
@@ -185,8 +187,9 @@ if (req.method === "GET" && req.url === "/api/bookings/my-bookings") {
                 DATE_FORMAT(pa.available_date, '%Y-%m-%d') AS travel_date,
                 b.number_of_people,
                 b.total_amount,
-                b.booking_status,
-                DATE_FORMAT(b.booking_date, '%Y-%m-%d %H:%i:%s') AS booking_date
+b.booking_status,
+b.payment_status,
+DATE_FORMAT(b.booking_date, '%Y-%m-%d %H:%i:%s') AS booking_date
             FROM bookings b
             JOIN packages p
                 ON b.package_id = p.package_id
@@ -641,20 +644,30 @@ if (
         `, [booking.number_of_people, booking.availability_id]);
 
         // 6. Update booking status
-        await connection.query(`
-            UPDATE bookings
-            SET booking_status = 'cancelled'
-            WHERE booking_id = ?
-        `, [bookingId]);
-        // Refund successful payments (simulation only)
-        const [refundResult] = await connection.query(`
-            UPDATE payments
-            SET payment_status = 'refunded'
-            WHERE booking_id = ?
-            AND payment_status = 'success'
-        `, [bookingId]);
+await connection.query(`
+    UPDATE bookings
+    SET booking_status = 'cancelled'
+    WHERE booking_id = ?
+`, [bookingId]);
 
-        const refundIssued = refundResult.affectedRows > 0;
+// 7. Refund successful payments (simulation only)
+const [refundResult] = await connection.query(`
+    UPDATE payments
+    SET payment_status = 'refunded'
+    WHERE booking_id = ?
+      AND payment_status = 'success'
+`, [bookingId]);
+
+const refundIssued = refundResult.affectedRows > 0;
+
+// 8. Update booking payment status if refund was issued
+if (refundIssued) {
+    await connection.query(`
+        UPDATE bookings
+        SET payment_status = 'refunded'
+        WHERE booking_id = ?
+    `, [bookingId]);
+}
 
         await connection.commit();
 
@@ -825,6 +838,11 @@ if (req.method === "POST" && req.url === "/api/payments") {
         await connection.query(`
             UPDATE bookings
             SET booking_status = 'confirmed'
+            WHERE booking_id = ?
+        `, [bookingId]);
+        await connection.query(`
+            UPDATE bookings
+            SET payment_status = 'paid'
             WHERE booking_id = ?
         `, [bookingId]);
 
