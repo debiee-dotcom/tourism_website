@@ -1,4 +1,5 @@
 /* LocalTrails dashboards: real session-authenticated APIs, no mock data. */
+let siteName = 'LocalTrails';
 (() => {
   'use strict';
 
@@ -26,7 +27,10 @@
         ['bookings', 'All bookings'],
         ['reports', 'Reports & Analytics'],
         ['logs', 'System Activity'],
-        ...(superAdmin ? [['admins', 'Administrators']] : [])
+        ...(superAdmin ? [
+    ['admins', 'Administrators'],
+    ['settings', 'System Settings']
+] : [])
       ];
 
   const navIcons = {
@@ -42,7 +46,8 @@
     destinations: '⌖',
     categories: '▦',
     reports: '▥',
-    logs: '▤'
+    logs: '▤',
+    settings: '⚙'
   };
 
   let section = 'overview';
@@ -171,7 +176,7 @@
           <a class="brand" href="/">
             <span class="brand-icon">L</span>
             <span>
-              <strong>LocalTrails</strong>
+              <strong id="site-name">${e(siteName)}</strong>
               <small>TOURISM PLATFORM</small>
             </span>
           </a>
@@ -203,7 +208,8 @@
             <button class="menu-toggle" id="toggle-menu">☰</button>
 
             <span class="breadcrumb">
-              LocalTrails / <strong id="crumb">Overview</strong>
+              <<span id="breadcrumb-site">${e(siteName)}</span> /
+<strong id="crumb">Overview</strong>
             </span>
 
             <div class="topbar-right">
@@ -376,19 +382,137 @@
 
       return;
     }
-
-    // PROVIDER EARNINGS
-    if (section === 'earnings') {
-      const earnings = await api('/earnings');
-
-      body.innerHTML = stats([
-        ['Paid bookings', earnings.paid_bookings],
-        ['Total earnings', money(earnings.total_earnings)]
-      ]);
-
-      return;
+    // SYSTEM SETTINGS
+if (section === 'settings') {
+    if (!superAdmin) {
+        body.innerHTML = '<p>Access denied.</p>';
+        return;
     }
 
+    const settings = await api('/settings');
+
+    const booleanSettings = [
+        'booking_enabled',
+        'registration_enabled',
+        'maintenance_mode'
+    ];
+
+    body.innerHTML = `
+        <div class="panel padded">
+            <div class="settings-intro">
+    <h2>Platform Configuration</h2>
+    <p>Manage your website, bookings, registrations and support details.</p>
+</div>
+
+            <form id="settings-form">
+
+                ${settings.map(setting => `
+                    <div class="form-group">
+                        <label for="setting-${e(setting.setting_key)}">
+                            ${e(setting.description || setting.setting_key)}
+                        </label>
+
+                        ${
+                            booleanSettings.includes(setting.setting_key)
+                            ? `
+                                <input
+                                    type="checkbox"
+                                    id="setting-${e(setting.setting_key)}"
+                                    data-key="${e(setting.setting_key)}"
+                                    ${setting.setting_value === 'true' ? 'checked' : ''}
+                                >
+                            `
+                            : `
+                                <input
+                                    type="text"
+                                    id="setting-${e(setting.setting_key)}"
+                                    data-key="${e(setting.setting_key)}"
+                                    value="${e(setting.setting_value)}"
+                                >
+                            `
+                        }
+                    </div>
+                `).join('')}
+
+                <button type="submit" class="btn primary">
+                    Save Settings
+                </button>
+            </form>
+        </div>
+    `;
+
+    document.getElementById('settings-form')
+        .addEventListener('submit', async event => {
+            event.preventDefault();
+
+            try {
+                const updatedSettings = settings.map(setting => {
+                    const input = document.getElementById(
+                        `setting-${setting.setting_key}`
+                    );
+
+                    return {
+                        key: setting.setting_key,
+                        value: booleanSettings.includes(setting.setting_key)
+                            ? String(input.checked)
+                            : input.value.trim()
+                    };
+                });
+
+                await api('/settings', 'PUT', {
+    settings: updatedSettings
+});
+
+const newSiteName = updatedSettings.find(
+    setting => setting.key === 'site_name'
+)?.value || 'LocalTrails';
+
+document.getElementById('site-name').textContent = newSiteName;
+document.getElementById('breadcrumb-site').textContent = newSiteName;
+
+document.title = newSiteName + ' | Dashboard';
+
+flash('System settings updated successfully.');
+            } catch (error) {
+                flash(error.message, true);
+            }
+        });
+
+    return;
+}
+
+    // PROVIDER EARNINGS
+    // PROVIDER EARNINGS
+if (section === 'earnings') {
+    const earnings = await api('/earnings');
+
+    body.innerHTML = stats([
+        ['Paid bookings', earnings.paid_bookings],
+        ['Total earnings', money(earnings.total_earnings)]
+    ]);
+
+    body.innerHTML += `
+        <div class="panel padded">
+            <h2>Package-wise earnings</h2>
+            <p class="muted">
+                Earnings from successful payments for each package.
+            </p>
+        </div>
+    `;
+
+    body.innerHTML += table(
+        ['Package', 'Paid bookings', 'Total earnings'],
+        (earnings.packages || []).map(p => `
+            <tr>
+                ${cell(p.title)}
+                ${cell(p.paid_bookings)}
+                ${cell(money(p.total_earnings))}
+            </tr>
+        `)
+    );
+
+    return;
+}
     // PACKAGES
     if (section === 'packages') {
       rows = await api('/packages');
@@ -509,6 +633,9 @@
     if (['providers', 'customers', 'admins'].includes(section)) {
       rows = await api('/' + section);
       cache[section] = rows;
+      if (section === 'admins' && superAdmin) {
+    setAction('+ Create Administrator', () => adminEditor());
+}
 
       body.innerHTML = table(
         ['Name', 'Email', 'Joined', 'Status', 'Actions'],
@@ -529,10 +656,21 @@
                     )
                   : section === 'admins'
                     ? btn(
-                        'admin-status',
-                        u.id,
-                        u.status === 'active' ? 'Block' : 'Activate'
-                      )
+    'admin-edit',
+    u.id,
+    'Edit'
+) +
+btn(
+    'admin-status',
+    u.id,
+    u.status === 'active' ? 'Block' : 'Activate'
+) +
+btn(
+    'admin-delete',
+    u.id,
+    'Delete',
+    'danger'
+)
                     : btn(
                         'provider-status',
                         u.id,
@@ -614,7 +752,7 @@
         ['Cancelled bookings', summary.cancelled_bookings],
         ['Booking value', money(summary.total_booking_value)]
       ]) +
-        `<div class="panel padded">
+        `<div class="panel settings-panel">
           <h2>Monthly booking and revenue report</h2>
         </div>` +
         table(
@@ -641,7 +779,7 @@
 
         rows.map(log => `
           <tr>
-            ${cell(log.user_name || 'System')}
+            ${cell(log.user_name || log.user_email || 'Deleted User')}
             ${cell(log.action)}
             ${cell(log.description)}
             ${cell(log.ip_address)}
@@ -653,7 +791,129 @@
       return;
     }
   }
+  async function adminEditor(admin = null) {
+    const editing = Boolean(admin);
 
+    let available = [
+        'manage_providers',
+        'manage_customers',
+        'manage_packages',
+        'manage_destinations',
+        'manage_categories',
+        'manage_bookings',
+        'view_reports'
+    ];
+
+    let assigned = [];
+
+    if (editing) {
+        const result = await api(
+            '/admins/' + admin.id + '/permissions'
+        );
+
+        available = result.available;
+        assigned = result.assigned;
+    }
+
+    const permissionLabels = {
+        manage_providers: 'Manage Providers',
+        manage_customers: 'Manage Customers',
+        manage_packages: 'Manage Packages',
+        manage_destinations: 'Manage Destinations',
+        manage_categories: 'Manage Categories',
+        manage_bookings: 'Manage Bookings',
+        view_reports: 'View Reports & Analytics'
+    };
+
+    const permissionFields = `
+        <div class="form-field" style="grid-column:1/-1">
+            <span><strong>Administrator Permissions</strong></span>
+            <p>Select the sections this administrator can access.</p>
+
+            <div class="permission-list">
+                ${available.map(permission => `
+                    <label class="permission-item">
+                        <input
+                            type="checkbox"
+                            name="permissions"
+                            value="${e(permission)}"
+                            ${assigned.includes(permission) ? 'checked' : ''}
+                        >
+                        <span>${e(permissionLabels[permission] || permission)}</span>
+                    </label>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    editor(
+        editing ? 'Edit Administrator' : 'Create Administrator',
+
+        `
+        <label class="form-field">
+            <span>Full Name</span>
+            <input name="name" required value="${e(admin?.name || '')}">
+        </label>
+
+        <label class="form-field">
+            <span>Email</span>
+            <input name="email" type="email" required
+                value="${e(admin?.email || '')}">
+        </label>
+
+        <label class="form-field">
+            <span>Mobile</span>
+            <input name="mobile"
+                value="${e(admin?.mobile || '')}">
+        </label>
+
+        <label class="form-field">
+            <span>${editing ? 'New Password (optional)' : 'Password'}</span>
+            <input name="password" type="password"
+                ${editing ? '' : 'required'}
+                minlength="8">
+        </label>
+
+        ${permissionFields}
+        `,
+
+        async data => {
+            const selectedPermissions = [
+                ...document.querySelectorAll(
+                    '#editor-fields input[name="permissions"]:checked'
+                )
+            ].map(input => input.value);
+
+            if (editing) {
+                await api('/admins/' + admin.id, 'PUT', {
+                    name: data.name,
+                    email: data.email,
+                    mobile: data.mobile,
+                    password: data.password
+                });
+
+                await api(
+                    '/admins/' + admin.id + '/permissions',
+                    'PUT',
+                    { permissions: selectedPermissions }
+                );
+            } else {
+                const created = await api('/admins', 'POST', {
+                    name: data.name,
+                    email: data.email,
+                    mobile: data.mobile,
+                    password: data.password
+                });
+
+                await api(
+                    '/admins/' + created.id + '/permissions',
+                    'PUT',
+                    { permissions: selectedPermissions }
+                );
+            }
+        }
+    );
+}
   // FORM HELPERS
   const input = (label, name, value = '', type = 'text', extra = '') => `
     <label class="form-field">
@@ -793,7 +1053,29 @@
           'url'
         ) +
 
-        text('Description', 'description', p?.description || '');
+        text('Description', 'description', p?.description || '') +
+
+text(
+    'Itinerary (JSON format)',
+    'itinerary',
+    p?.itinerary
+        ? (typeof p.itinerary === 'string'
+            ? p.itinerary
+            : JSON.stringify(p.itinerary, null, 2))
+        : '[{"day":1,"activity":"Arrival and sightseeing"}]'
+) +
+
+text(
+    'Inclusions (one per line)',
+    'inclusions',
+    p?.inclusions || ''
+) +
+
+text(
+    'Exclusions (one per line)',
+    'exclusions',
+    p?.exclusions || ''
+);
 
       await editor(
         p ? 'Edit package' : 'Create package',
@@ -809,11 +1091,17 @@
             data[key] = Number(data[key]);
           }
 
-          await api(
-            '/packages' + (p ? '/' + p.package_id : ''),
-            p ? 'PUT' : 'POST',
-            data
-          );
+          try {
+    data.itinerary = JSON.parse(data.itinerary || '[]');
+} catch {
+    throw new Error('Please enter a valid JSON itinerary.');
+}
+
+await api(
+    '/packages' + (p ? '/' + p.package_id : ''),
+    p ? 'PUT' : 'POST',
+    data
+);
         }
       );
 
@@ -1007,8 +1295,62 @@
 
     const task = button.dataset.task;
     const id = Number(button.dataset.id);
+    if (task === 'admin-create') {
+    return editor(
+        'Create Administrator',
+        `
+            <div class="form-grid">
+                <label class="form-field">
+                    <span>Full name</span>
+                    <input name="name" required>
+                </label>
+
+                <label class="form-field">
+                    <span>Email</span>
+                    <input name="email" type="email" required>
+                </label>
+
+                <label class="form-field">
+                    <span>Mobile</span>
+                    <input name="mobile">
+                </label>
+
+                <label class="form-field">
+                    <span>Password</span>
+                    <input name="password" type="password"
+                           minlength="8" required>
+                </label>
+            </div>
+        `,
+        data => api('/admins', 'POST', data)
+    ).then(() => load());
+}
 
     try {
+      if (task === 'admin-create') {
+    adminEditor();
+    return;
+}
+
+if (task === 'admin-edit') {
+    const admin = cache.admins.find(
+        x => Number(x.id) === id
+    );
+
+    if (admin) adminEditor(admin);
+    return;
+}
+
+if (task === 'admin-delete') {
+    if (!confirm('Permanently delete this administrator?')) {
+        return;
+    }
+
+    await api('/admins/' + id, 'DELETE');
+    flash('Administrator deleted successfully');
+    await load();
+    return;
+}
       if (task === 'package-edit') {
         const pkg = cache.packages.find(
           x => Number(x.package_id) === id
@@ -1191,6 +1533,17 @@
           ' account.'
         );
       }
+      if (superAdmin) {
+    const settings = await api('/settings');
+
+    const savedName = settings.find(
+        setting => setting.setting_key === 'site_name'
+    );
+
+    if (savedName?.setting_value) {
+        siteName = savedName.setting_value;
+    }
+}
 
       shell();
       await load();

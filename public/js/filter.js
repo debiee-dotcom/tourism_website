@@ -1,30 +1,58 @@
+
 /* ============================================================
    LOCAL TRAILS — filter.js
    Search + multi-filter logic (AND-combined)
-   Runs after app.js (which exposes `packages` + `renderPackages`)
    ============================================================ */
 
-// ── DOM refs ─────────────────────────────────────────────────
-const searchInput       = document.getElementById("searchInput");
+// DOM refs
+const searchInput = document.getElementById("searchInput");
 const filterDestination = document.getElementById("filterDestination");
-const filterCategory    = document.getElementById("filterCategory");
-const filterDuration    = document.getElementById("filterDuration");
-const filterPrice       = document.getElementById("filterPrice");
-const filterDate        = document.getElementById("filterDate");
-const priceDisplay      = document.getElementById("priceDisplay");
-const resetBtn          = document.getElementById("resetFilters");
+const filterCategory = document.getElementById("filterCategory");
+const filterDuration = document.getElementById("filterDuration");
+const filterPrice = document.getElementById("filterPrice");
+const filterDate = document.getElementById("filterDate");
+const priceDisplay = document.getElementById("priceDisplay");
+const resetBtn = document.getElementById("resetFilters");
 
-// ── Duration matcher ──────────────────────────────────────────
+// Load destinations dynamically from backend
+async function loadDestinations() {
+    try {
+        const response = await fetch("/api/catalog/options");
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error("Failed to load destinations");
+        }
+
+        const destinations = result.data.destinations || [];
+
+        // Preserve the default option
+        filterDestination.innerHTML =
+            '<option value="">All Destinations</option>';
+
+        destinations.forEach(destination => {
+            const option = document.createElement("option");
+            option.value = destination.name;
+            option.textContent = destination.name;
+            filterDestination.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error("Destination loading error:", error);
+    }
+}
+
+// Duration matcher
 function matchDuration(days, value) {
     if (!value) return true;
-    if (value === "1")   return days === 1;
+    if (value === "1") return days === 1;
     if (value === "2-3") return days >= 2 && days <= 3;
     if (value === "4-7") return days >= 4 && days <= 7;
-    if (value === "7+")  return days > 7;
+    if (value === "7+") return days > 7;
     return true;
 }
 
-// ── Main filter function ──────────────────────────────────────
+// Main filter function
 async function applyFilters() {
     const params = new URLSearchParams();
 
@@ -38,9 +66,11 @@ async function applyFilters() {
     if (query) params.append("search", query);
     if (dest) params.append("destination", dest);
     if (cat) params.append("category", cat);
+
     if (maxPrice && maxPrice < Number(filterPrice.max)) {
         params.append("maxPrice", maxPrice);
     }
+
     if (dur) params.append("duration", dur);
     if (date) params.append("date", date);
 
@@ -59,6 +89,10 @@ async function applyFilters() {
             ? data
             : data.packages;
 
+        if (!Array.isArray(packages)) {
+            throw new Error("Invalid package data received");
+        }
+
         renderPackages(packages);
 
     } catch (error) {
@@ -69,9 +103,10 @@ async function applyFilters() {
     }
 }
 
-// ── Price slider live display ──────────────────────────────────
+// Price slider
 function updatePriceDisplay() {
     const val = Number(filterPrice.value);
+
     priceDisplay.textContent = val >= 10000
         ? "Any"
         : `₹${val.toLocaleString("en-IN")}`;
@@ -82,21 +117,21 @@ filterPrice.addEventListener("input", () => {
     applyFilters();
 });
 
-// ── Reset ─────────────────────────────────────────────────────
+// Reset filters
 function resetFilters() {
-    searchInput.value       = "";
+    searchInput.value = "";
     filterDestination.value = "";
-    filterCategory.value    = "";
-    filterDuration.value    = "";
-    filterPrice.value       = filterPrice.max;
-    filterDate.value        = "";
+    filterCategory.value = "";
+    filterDuration.value = "";
+    filterPrice.value = filterPrice.max;
+    filterDate.value = "";
+
     updatePriceDisplay();
     applyFilters();
 }
 
 resetBtn.addEventListener("click", resetFilters);
 
-// ── Attach listeners ──────────────────────────────────────────
 // Search and date
 [searchInput, filterDate].forEach(el =>
     el.addEventListener("input", applyFilters)
@@ -107,5 +142,6 @@ resetBtn.addEventListener("click", resetFilters);
     el.addEventListener("change", applyFilters)
 );
 
-// ── Initialise display ────────────────────────────────────────
+// Initialise
 updatePriceDisplay();
+loadDestinations();
